@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SeenSlide Teacher</string>
+    <string name="app_name">PathChakra</string>
 
     <!-- Auth -->
     <string name="login_title">Welcome</string>

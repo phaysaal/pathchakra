@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SeenSlide শিক্ষক</string>
+    <string name="app_name">পাঠচক্র</string>
 
     <!-- Auth -->
     <string name="login_title">স্বাগতম</string>
