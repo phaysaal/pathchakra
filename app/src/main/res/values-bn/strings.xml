@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SeenSlide শিক্ষক</string>
+
+    <!-- Auth -->
+    <string name="login_title">স্বাগতম</string>
+    <string name="login_subtitle">শুরু করতে আপনার ইমেইল দিন</string>
+    <string name="email_hint">আপনার ইমেইল</string>
+    <string name="send_login_link">লগইন লিংক পাঠান</string>
+    <string name="check_email">ইমেইল দেখুন</string>
+    <string name="check_email_detail">আমরা %1$s তে একটি লগইন লিংক পাঠিয়েছি</string>
+    <string name="resend_link">আবার পাঠান</string>
+
+    <!-- Home -->
+    <string name="my_classes">আমার ক্লাস</string>
+    <string name="start_new_class">নতুন ক্লাস শুরু করুন</string>
+    <string name="no_classes_yet">এখনো কোনো ক্লাস নেই</string>
+    <string name="no_classes_hint">আপনার প্রথম ক্লাস শুরু করতে নিচের বাটনে চাপুন</string>
+
+    <!-- Session -->
+    <string name="class_name">ক্লাসের নাম</string>
+    <string name="class_name_hint">যেমন: গণিত ক্লাস ৫</string>
+    <string name="create_class">ক্লাস তৈরি করুন</string>
+    <string name="class_code">ক্লাস কোড</string>
+    <string name="share_code_hint">এই কোডটি আপনার ছাত্রদের দিন</string>
+    <string name="slides">স্লাইড</string>
+    <string name="add_slide">স্লাইড যোগ করুন</string>
+    <string name="go_live">লাইভ শুরু করুন</string>
+    <string name="end_class">ক্লাস শেষ করুন</string>
+
+    <!-- Slide creation -->
+    <string name="take_photo">ছবি তুলুন</string>
+    <string name="blank_canvas">ফাঁকা ক্যানভাস</string>
+    <string name="from_pdf">PDF থেকে</string>
+    <string name="save_slide">স্লাইড সেভ করুন</string>
+    <string name="discard">বাতিল</string>
+    <string name="retake">আবার তুলুন</string>
+
+    <!-- Live -->
+    <string name="live_class">লাইভ ক্লাস</string>
+    <string name="end_class_confirm">আপনি কি ক্লাস শেষ করতে চান? ভয়েস রেকর্ডিং ও লাইভ সিঙ্ক বন্ধ হবে।</string>
+    <string name="no_slides_draw">কোনো স্লাইড নেই — ফাঁকা ক্যানভাসে আঁকুন</string>
+    <string name="end">শেষ</string>
+
+    <!-- Slide Editor -->
+    <string name="slide_editor">স্লাইড এডিটর</string>
+    <string name="add_text">লেখা যোগ করুন</string>
+    <string name="type_here">এখানে লিখুন</string>
+    <string name="slide_saved">স্লাইড সেভ হয়েছে!</string>
+
+    <!-- PDF -->
+    <string name="open_pdf_file">PDF ফাইল খুলুন</string>
+    <string name="page_x_of_y">পৃষ্ঠা %1$d / %2$d</string>
+    <string name="draw_on_page">পৃষ্ঠায় আঁকুন</string>
+
+    <!-- Session Detail -->
+    <string name="no_slides_yet">এখনো কোনো স্লাইড নেই</string>
+    <string name="no_slides_hint">প্রথম স্লাইড তৈরি করতে নিচের বাটনে চাপুন</string>
+    <string name="take_photo_subtitle">বইয়ের পৃষ্ঠার ছবি তুলুন</string>
+    <string name="blank_canvas_subtitle">ফাঁকা সাদা ক্যানভাসে আঁকুন</string>
+    <string name="from_pdf_subtitle">PDF ফাইল থেকে পৃষ্ঠা নির্বাচন করুন</string>
+    <string name="x_slides">%1$d স্লাইড</string>
+    <string name="x_viewers">%1$d দর্শক</string>
+
+    <!-- Language -->
+    <string name="choose_language">ভাষা নির্বাচন করুন</string>
+    <string name="language_english">English</string>
+    <string name="language_bangla">বাংলা</string>
+
+    <!-- Common -->
+    <string name="ok">ঠিক আছে</string>
+    <string name="cancel">বাতিল</string>
+    <string name="retry">আবার চেষ্টা করুন</string>
+    <string name="loading">লোড হচ্ছে…</string>
+    <string name="error_network">ইন্টারনেট সংযোগ নেই</string>
+    <string name="error_generic">কিছু একটা সমস্যা হয়েছে</string>
+</resources>
