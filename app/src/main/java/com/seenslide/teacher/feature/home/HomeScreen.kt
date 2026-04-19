@@ -48,6 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.seenslide.teacher.R
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.seenslide.teacher.core.locale.LocaleHelper
 import com.seenslide.teacher.core.network.model.SessionResponse
 
@@ -61,6 +62,11 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     var showLanguageDialog by remember { mutableStateOf(false) }
+
+    LifecycleResumeEffect(Unit) {
+        viewModel.loadSessions()
+        onPauseOrDispose {}
+    }
 
     Scaffold(
         topBar = {
