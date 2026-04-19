@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Teacher sphere gradient — deep blue -->
+    <radialGradient id="teacher" cx="40%" cy="35%" r="50%">
+      <stop offset="0%" style="stop-color:#42A5F5"/>
+      <stop offset="50%" style="stop-color:#1565C0"/>
+      <stop offset="100%" style="stop-color:#0D47A1"/>
+    </radialGradient>
+    <radialGradient id="teacherShadow" cx="50%" cy="90%" r="50%">
+      <stop offset="0%" style="stop-color:#0D47A1;stop-opacity:0.4"/>
+      <stop offset="100%" style="stop-color:#0D47A1;stop-opacity:0"/>
+    </radialGradient>
+
+    <!-- Student sphere gradients — shades of green -->
+    <radialGradient id="s1" cx="38%" cy="32%" r="50%">
+      <stop offset="0%" style="stop-color:#81C784"/>
+      <stop offset="50%" style="stop-color:#43A047"/>
+      <stop offset="100%" style="stop-color:#2E7D32"/>
+    </radialGradient>
+    <radialGradient id="s2" cx="38%" cy="32%" r="50%">
+      <stop offset="0%" style="stop-color:#A5D6A7"/>
+      <stop offset="50%" style="stop-color:#66BB6A"/>
+      <stop offset="100%" style="stop-color:#388E3C"/>
+    </radialGradient>
+    <radialGradient id="s3" cx="38%" cy="32%" r="50%">
+      <stop offset="0%" style="stop-color:#69F0AE"/>
+      <stop offset="50%" style="stop-color:#4CAF50"/>
+      <stop offset="100%" style="stop-color:#1B5E20"/>
+    </radialGradient>
+    <radialGradient id="s4" cx="38%" cy="32%" r="50%">
+      <stop offset="0%" style="stop-color:#C8E6C9"/>
+      <stop offset="50%" style="stop-color:#81C784"/>
+      <stop offset="100%" style="stop-color:#2E7D32"/>
+    </radialGradient>
+    <radialGradient id="s5" cx="38%" cy="32%" r="50%">
+      <stop offset="0%" style="stop-color:#B9F6CA"/>
+      <stop offset="50%" style="stop-color:#57C85B"/>
+      <stop offset="100%" style="stop-color:#1B5E20"/>
+    </radialGradient>
+
+    <!-- Drop shadow filter -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Circular arcs connecting dots -->
+  <path d="M 256,66 A 190,190 0 0,1 420,161" fill="none" stroke="#F57C00" stroke-width="10" opacity="0.4"/>
+  <path d="M 420,161 A 190,190 0 0,1 420,351" fill="none" stroke="#F57C00" stroke-width="10" opacity="0.4"/>
+  <path d="M 420,351 A 190,190 0 0,1 256,446" fill="none" stroke="#F57C00" stroke-width="10" opacity="0.4"/>
+  <path d="M 256,446 A 190,190 0 0,1 92,351" fill="none" stroke="#F57C00" stroke-width="10" opacity="0.4"/>
+  <path d="M 92,351 A 190,190 0 0,1 92,161" fill="none" stroke="#F57C00" stroke-width="10" opacity="0.4"/>
+  <path d="M 92,161 A 190,190 0 0,1 256,66" fill="none" stroke="#F57C00" stroke-width="10" opacity="0.4"/>
+
+  <!-- Inner connections -->
+  <line x1="256" y1="66"  x2="256" y2="446" stroke="#F57C00" stroke-width="6" opacity="0.25"/>
+  <line x1="92"  y1="161" x2="420" y2="351" stroke="#F57C00" stroke-width="6" opacity="0.25"/>
+  <line x1="420" y1="161" x2="92"  y2="351" stroke="#F57C00" stroke-width="6" opacity="0.25"/>
+
+  <!-- Student spheres with 3D shading and shadow -->
+  <circle cx="420" cy="161" r="30" fill="url(#s1)" filter="url(#shadow)"/>
+  <ellipse cx="412" cy="150" rx="12" ry="8" fill="white" opacity="0.25"/>
+
+  <circle cx="420" cy="351" r="30" fill="url(#s2)" filter="url(#shadow)"/>
+  <ellipse cx="412" cy="340" rx="12" ry="8" fill="white" opacity="0.25"/>
+
+  <circle cx="256" cy="446" r="30" fill="url(#s3)" filter="url(#shadow)"/>
+  <ellipse cx="248" cy="435" rx="12" ry="8" fill="white" opacity="0.25"/>
+
+  <circle cx="92"  cy="351" r="30" fill="url(#s4)" filter="url(#shadow)"/>
+  <ellipse cx="84"  cy="340" rx="12" ry="8" fill="white" opacity="0.25"/>
+
+  <circle cx="92"  cy="161" r="30" fill="url(#s5)" filter="url(#shadow)"/>
+  <ellipse cx="84"  cy="150" rx="12" ry="8" fill="white" opacity="0.25"/>
+
+  <!-- Teacher sphere — larger, blue, prominent -->
+  <circle cx="256" cy="66" r="52" fill="url(#teacher)" filter="url(#shadow)"/>
+  <ellipse cx="244" cy="50" rx="20" ry="12" fill="white" opacity="0.3"/>
+</svg>

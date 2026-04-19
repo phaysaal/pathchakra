@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1B5E20;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4CAF50;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Orbital ring — the cycle/chakra -->
+  <circle cx="256" cy="256" r="160" fill="none" stroke="#43A047" stroke-width="4" opacity="0.35"/>
+
+  <!-- Connection lines from center teacher to each student -->
+  <line x1="256" y1="256" x2="256" y2="96"  stroke="#43A047" stroke-width="3" opacity="0.3"/>
+  <line x1="256" y1="256" x2="408" y2="168" stroke="#43A047" stroke-width="3" opacity="0.3"/>
+  <line x1="256" y1="256" x2="408" y2="344" stroke="#43A047" stroke-width="3" opacity="0.3"/>
+  <line x1="256" y1="256" x2="256" y2="416" stroke="#43A047" stroke-width="3" opacity="0.3"/>
+  <line x1="256" y1="256" x2="104" y2="344" stroke="#43A047" stroke-width="3" opacity="0.3"/>
+  <line x1="256" y1="256" x2="104" y2="168" stroke="#43A047" stroke-width="3" opacity="0.3"/>
+
+  <!-- Student dots on the ring -->
+  <circle cx="256" cy="96"  r="14" fill="#43A047" opacity="0.8"/>
+  <circle cx="408" cy="168" r="14" fill="#43A047" opacity="0.8"/>
+  <circle cx="408" cy="344" r="14" fill="#43A047" opacity="0.8"/>
+  <circle cx="256" cy="416" r="14" fill="#43A047" opacity="0.8"/>
+  <circle cx="104" cy="344" r="14" fill="#43A047" opacity="0.8"/>
+  <circle cx="104" cy="168" r="14" fill="#43A047" opacity="0.8"/>
+
+  <!-- Teacher — center, large -->
+  <circle cx="256" cy="256" r="32" fill="url(#g2)"/>
+  <circle cx="256" cy="256" r="16" fill="white" opacity="0.2"/>
+</svg>

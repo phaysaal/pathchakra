@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2E7D32;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#66BB6A;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Outer ring path connecting all dots -->
+  <polygon
+    points="256,72 420,168 420,344 256,440 92,344 92,168"
+    fill="none"
+    stroke="#2E7D32"
+    stroke-width="5"
+    opacity="0.4"
+  />
+
+  <!-- Inner star connections -->
+  <line x1="256" y1="72"  x2="256" y2="440" stroke="#43A047" stroke-width="2.5" opacity="0.2"/>
+  <line x1="92"  y1="168" x2="420" y2="344" stroke="#43A047" stroke-width="2.5" opacity="0.2"/>
+  <line x1="420" y1="168" x2="92"  y2="344" stroke="#43A047" stroke-width="2.5" opacity="0.2"/>
+
+  <!-- Student dots — larger -->
+  <circle cx="420" cy="168" r="28" fill="#43A047" opacity="0.75"/>
+  <circle cx="420" cy="344" r="28" fill="#43A047" opacity="0.75"/>
+  <circle cx="256" cy="440" r="28" fill="#43A047" opacity="0.75"/>
+  <circle cx="92"  cy="344" r="28" fill="#43A047" opacity="0.75"/>
+  <circle cx="92"  cy="168" r="28" fill="#43A047" opacity="0.75"/>
+
+  <!-- Teacher dot — top center, significantly larger -->
+  <circle cx="256" cy="72" r="48" fill="url(#g1)"/>
+  <circle cx="256" cy="72" r="24" fill="white" opacity="0.2"/>
+</svg>
