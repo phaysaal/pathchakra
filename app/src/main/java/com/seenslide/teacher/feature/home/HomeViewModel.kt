@@ -32,8 +32,8 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             try {
-                val sessions = sessionApi.listSessions()
-                _uiState.value = HomeUiState(sessions = sessions, isLoading = false)
+                val response = sessionApi.listSessions()
+                _uiState.value = HomeUiState(sessions = response.sessions, isLoading = false)
             } catch (e: Exception) {
                 _uiState.value = HomeUiState(isLoading = false, error = "Could not load classes")
             }

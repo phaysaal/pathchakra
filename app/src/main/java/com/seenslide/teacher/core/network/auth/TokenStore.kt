@@ -33,6 +33,10 @@ class TokenStore @Inject constructor(
         prefs[KEY_USER_EMAIL]
     }
 
+    val userName: Flow<String?> = context.authDataStore.data.map { prefs ->
+        prefs[KEY_USER_NAME]
+    }
+
     // Synchronous read for interceptor — DataStore caches in memory after first read
     fun getToken(): String? = runBlocking {
         context.authDataStore.data.first()[KEY_AUTH_TOKEN]

@@ -13,6 +13,8 @@ import com.seenslide.teacher.feature.session.CreateSessionScreen
 import com.seenslide.teacher.feature.session.CreateSessionViewModel
 import com.seenslide.teacher.feature.session.SessionDetailScreen
 import com.seenslide.teacher.feature.session.SessionDetailViewModel
+import com.seenslide.teacher.feature.session.TalkDetailScreen
+import com.seenslide.teacher.feature.session.TalkDetailViewModel
 import com.seenslide.teacher.feature.slide.camera.CameraFlow
 import com.seenslide.teacher.feature.slide.camera.CameraViewModel
 import com.seenslide.teacher.feature.live.LiveClassScreen
@@ -71,6 +73,17 @@ fun SeenSlideNavHost() {
         composable(Routes.SESSION_DETAIL) {
             val viewModel = hiltViewModel<SessionDetailViewModel>()
             SessionDetailScreen(
+                viewModel = viewModel,
+                onTalkClick = { sessionId, talkId ->
+                    navController.navigate(Routes.talkDetail(sessionId, talkId))
+                },
+                onBack = { navController.popBackStack() },
+            )
+        }
+
+        composable(Routes.TALK_DETAIL) {
+            val viewModel = hiltViewModel<TalkDetailViewModel>()
+            TalkDetailScreen(
                 viewModel = viewModel,
                 onTakePhoto = { sessionId, talkId ->
                     navController.navigate(Routes.camera(sessionId, talkId))

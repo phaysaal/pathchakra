@@ -22,9 +22,14 @@ data class SessionResponse(
 )
 
 @JsonClass(generateAdapter = true)
-data class StartTalkRequest(
-    val title: String,
+data class RenameSessionRequest(
     @Json(name = "presenter_name") val presenterName: String,
+)
+
+@JsonClass(generateAdapter = true)
+data class CreateTalkRequest(
+    val title: String,
+    @Json(name = "presenter_name") val presenterName: String? = null,
     val description: String? = null,
 )
 
@@ -33,8 +38,26 @@ data class TalkResponse(
     @Json(name = "talk_id") val talkId: String,
     @Json(name = "session_id") val sessionId: String,
     val title: String,
+    @Json(name = "presenter_name") val presenterName: String? = null,
+    val description: String? = null,
     val status: String? = null,
     @Json(name = "start_time") val startTime: Double? = null,
+    @Json(name = "end_time") val endTime: Double? = null,
+    @Json(name = "created_at") val createdAt: Double? = null,
+    @Json(name = "slide_count") val slideCount: Int = 0,
+)
+
+@JsonClass(generateAdapter = true)
+data class TalkListResponse(
+    val talks: List<TalkResponse>,
+    val total: Int = 0,
+)
+
+@JsonClass(generateAdapter = true)
+data class UpdateTalkRequest(
+    val title: String? = null,
+    @Json(name = "presenter_name") val presenterName: String? = null,
+    val description: String? = null,
 )
 
 @JsonClass(generateAdapter = true)

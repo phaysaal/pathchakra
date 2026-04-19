@@ -3,12 +3,12 @@ package com.seenslide.teacher.feature.session
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.seenslide.teacher.BuildConfig
 import com.seenslide.teacher.core.network.api.SessionApi
+import com.seenslide.teacher.core.network.model.CreateTalkRequest
+import com.seenslide.teacher.core.network.model.RenameSessionRequest
 import com.seenslide.teacher.core.network.model.SessionResponse
-import com.seenslide.teacher.core.network.model.SlideInfo
-import com.seenslide.teacher.core.network.model.StartTalkRequest
-import com.seenslide.teacher.core.data.SlideRepository
+import com.seenslide.teacher.core.network.model.TalkResponse
+import com.seenslide.teacher.core.network.model.UpdateTalkRequest
 import com.seenslide.teacher.core.network.auth.TokenStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,17 +19,26 @@ import javax.inject.Inject
 
 data class SessionDetailUiState(
     val session: SessionResponse? = null,
-    val activeTalkId: String? = null,
-    val slides: List<SlideInfo> = emptyList(),
+    val talks: List<TalkResponse> = emptyList(),
     val isLoading: Boolean = true,
     val error: String? = null,
+    val showCreateTalk: Boolean = false,
+    val newTalkTitle: String = "",
+    val isCreatingTalk: Boolean = false,
+    val showRename: Boolean = false,
+    val renameText: String = "",
+    val showQrCode: Boolean = false,
+    val showDeleteConfirm: Boolean = false,
+    val showTalkMenu: TalkResponse? = null,
+    val showRenameTalk: TalkResponse? = null,
+    val renameTalkText: String = "",
+    val showDeleteTalkConfirm: TalkResponse? = null,
 )
 
 @HiltViewModel
 class SessionDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val sessionApi: SessionApi,
-    private val slideRepository: SlideRepository,
     private val tokenStore: TokenStore,
 ) : ViewModel() {
 
@@ -46,52 +55,214 @@ class SessionDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
-                val sessions = sessionApi.listSessions()
-                val session = sessions.find { it.sessionId == sessionId }
-                val talkId = session?.activeTalkId
+                val sessionsResponse = sessionApi.listSessions()
+                val session = sessionsResponse.sessions.find { it.sessionId == sessionId }
 
-                val slides = if (talkId != null) {
-                    try { slideRepository.getSlides(talkId) } catch (_: Exception) { emptyList() }
-                } else {
-                    emptyList()
-                }
+                val talksResponse = sessionApi.listTalks(sessionId)
 
                 _uiState.value = SessionDetailUiState(
                     session = session,
-                    activeTalkId = talkId,
-                    slides = slides,
+                    talks = talksResponse.talks,
                     isLoading = false,
                 )
             } catch (e: Exception) {
-                _uiState.value = SessionDetailUiState(isLoading = false, error = "Could not load class details")
+                _uiState.value = SessionDetailUiState(
+                    isLoading = false,
+                    error = "Could not load class details",
+                )
             }
         }
     }
 
-    fun ensureTalkAndGetId(onReady: (talkId: String) -> Unit) {
-        val existingTalkId = _uiState.value.activeTalkId
-        if (existingTalkId != null) {
-            onReady(existingTalkId)
-            return
-        }
+    // --- Rename Session ---
+
+    fun showRenameDialog() {
+        _uiState.value = _uiState.value.copy(
+            showRename = true,
+            renameText = _uiState.value.session?.presenterName ?: "",
+        )
+    }
+
+    fun dismissRenameDialog() {
+        _uiState.value = _uiState.value.copy(showRename = false)
+    }
+
+    fun onRenameTextChanged(text: String) {
+        _uiState.value = _uiState.value.copy(renameText = text)
+    }
+
+    fun submitRename() {
+        val newName = _uiState.value.renameText.trim()
+        if (newName.isBlank()) return
 
         viewModelScope.launch {
             try {
-                val email = tokenStore.userEmail.first() ?: "teacher"
-                val talk = sessionApi.startTalk(
-                    sessionId,
-                    StartTalkRequest(title = "Class", presenterName = email),
+                sessionApi.renameSession(sessionId, RenameSessionRequest(newName))
+                _uiState.value = _uiState.value.copy(
+                    showRename = false,
+                    session = _uiState.value.session?.copy(presenterName = newName),
                 )
-                _uiState.value = _uiState.value.copy(activeTalkId = talk.talkId)
-                onReady(talk.talkId)
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(error = "Could not start talk")
+                _uiState.value = _uiState.value.copy(
+                    showRename = false,
+                    error = "Could not rename class",
+                )
             }
         }
     }
 
-    fun slideImageUrl(slideNumber: Int): String {
-        val base = BuildConfig.API_BASE_URL.trimEnd('/')
-        return "$base/api/cloud/slides/$sessionId/$slideNumber/thumbnail"
+    // --- Delete Session ---
+
+    fun showDeleteConfirm() {
+        _uiState.value = _uiState.value.copy(showDeleteConfirm = true)
+    }
+
+    fun dismissDeleteConfirm() {
+        _uiState.value = _uiState.value.copy(showDeleteConfirm = false)
+    }
+
+    fun deleteSession(onDeleted: () -> Unit) {
+        viewModelScope.launch {
+            try {
+                sessionApi.deleteSession(sessionId)
+                onDeleted()
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    showDeleteConfirm = false,
+                    error = "Could not delete class",
+                )
+            }
+        }
+    }
+
+    // --- QR Code ---
+
+    fun showQrCode() {
+        _uiState.value = _uiState.value.copy(showQrCode = true)
+    }
+
+    fun dismissQrCode() {
+        _uiState.value = _uiState.value.copy(showQrCode = false)
+    }
+
+    // --- Create Talk ---
+
+    fun showCreateTalkDialog() {
+        _uiState.value = _uiState.value.copy(showCreateTalk = true, newTalkTitle = "")
+    }
+
+    fun dismissCreateTalkDialog() {
+        _uiState.value = _uiState.value.copy(showCreateTalk = false, newTalkTitle = "")
+    }
+
+    fun onNewTalkTitleChanged(title: String) {
+        _uiState.value = _uiState.value.copy(newTalkTitle = title)
+    }
+
+    fun createTalk(onCreated: (talkId: String) -> Unit) {
+        val title = _uiState.value.newTalkTitle.trim()
+        if (title.isBlank()) return
+
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isCreatingTalk = true)
+            try {
+                val name = tokenStore.userName.first()
+                val talk = sessionApi.createTalk(
+                    sessionId,
+                    CreateTalkRequest(title = title, presenterName = name),
+                )
+                // Add new talk to list immediately
+                _uiState.value = _uiState.value.copy(
+                    isCreatingTalk = false,
+                    showCreateTalk = false,
+                    newTalkTitle = "",
+                    talks = _uiState.value.talks + talk,
+                )
+                onCreated(talk.talkId)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isCreatingTalk = false,
+                    error = "Could not create lesson",
+                )
+            }
+        }
+    }
+
+    // --- Talk Actions (rename / delete) ---
+
+    fun showTalkMenu(talk: TalkResponse) {
+        _uiState.value = _uiState.value.copy(showTalkMenu = talk)
+    }
+
+    fun dismissTalkMenu() {
+        _uiState.value = _uiState.value.copy(showTalkMenu = null)
+    }
+
+    fun showRenameTalkDialog(talk: TalkResponse) {
+        _uiState.value = _uiState.value.copy(
+            showTalkMenu = null,
+            showRenameTalk = talk,
+            renameTalkText = talk.title,
+        )
+    }
+
+    fun dismissRenameTalkDialog() {
+        _uiState.value = _uiState.value.copy(showRenameTalk = null)
+    }
+
+    fun onRenameTalkTextChanged(text: String) {
+        _uiState.value = _uiState.value.copy(renameTalkText = text)
+    }
+
+    fun submitRenameTalk() {
+        val talk = _uiState.value.showRenameTalk ?: return
+        val newTitle = _uiState.value.renameTalkText.trim()
+        if (newTitle.isBlank()) return
+
+        viewModelScope.launch {
+            try {
+                sessionApi.updateTalk(talk.talkId, UpdateTalkRequest(title = newTitle))
+                _uiState.value = _uiState.value.copy(
+                    showRenameTalk = null,
+                    talks = _uiState.value.talks.map {
+                        if (it.talkId == talk.talkId) it.copy(title = newTitle) else it
+                    },
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    showRenameTalk = null,
+                    error = "Could not rename lesson",
+                )
+            }
+        }
+    }
+
+    fun showDeleteTalkConfirm(talk: TalkResponse) {
+        _uiState.value = _uiState.value.copy(
+            showTalkMenu = null,
+            showDeleteTalkConfirm = talk,
+        )
+    }
+
+    fun dismissDeleteTalkConfirm() {
+        _uiState.value = _uiState.value.copy(showDeleteTalkConfirm = null)
+    }
+
+    fun deleteTalk() {
+        val talk = _uiState.value.showDeleteTalkConfirm ?: return
+        viewModelScope.launch {
+            try {
+                sessionApi.deleteTalk(talk.talkId)
+                _uiState.value = _uiState.value.copy(
+                    showDeleteTalkConfirm = null,
+                    talks = _uiState.value.talks.filter { it.talkId != talk.talkId },
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    showDeleteTalkConfirm = null,
+                    error = "Could not delete lesson",
+                )
+            }
+        }
     }
 }

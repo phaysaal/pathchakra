@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="teacher" cx="40%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#42A5F5"/>
+      <stop offset="50%" stop-color="#1565C0"/>
+      <stop offset="100%" stop-color="#0D47A1"/>
+    </radialGradient>
+    <radialGradient id="s1" cx="38%" cy="32%" r="50%">
+      <stop offset="0%" stop-color="#81C784"/>
+      <stop offset="50%" stop-color="#43A047"/>
+      <stop offset="100%" stop-color="#2E7D32"/>
+    </radialGradient>
+    <radialGradient id="s2" cx="38%" cy="32%" r="50%">
+      <stop offset="0%" stop-color="#A5D6A7"/>
+      <stop offset="50%" stop-color="#66BB6A"/>
+      <stop offset="100%" stop-color="#388E3C"/>
+    </radialGradient>
+    <radialGradient id="s3" cx="38%" cy="32%" r="50%">
+      <stop offset="0%" stop-color="#69F0AE"/>
+      <stop offset="50%" stop-color="#4CAF50"/>
+      <stop offset="100%" stop-color="#1B5E20"/>
+    </radialGradient>
+    <radialGradient id="s4" cx="38%" cy="32%" r="50%">
+      <stop offset="0%" stop-color="#C8E6C9"/>
+      <stop offset="50%" stop-color="#81C784"/>
+      <stop offset="100%" stop-color="#2E7D32"/>
+    </radialGradient>
+    <radialGradient id="s5" cx="38%" cy="32%" r="50%">
+      <stop offset="0%" stop-color="#B9F6CA"/>
+      <stop offset="50%" stop-color="#57C85B"/>
+      <stop offset="100%" stop-color="#1B5E20"/>
+    </radialGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feOffset dx="2" dy="3" result="shifted"/>
+      <feFlood flood-color="#000000" flood-opacity="0.3" result="color"/>
+      <feComposite in="color" in2="shifted" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Circular arcs (radius 124, center 256,256) -->
+  <path d="M 256,133 A 124,124 0 0,1 363,194" fill="none" stroke="#F57C00" stroke-width="7" opacity="0.5"/>
+  <path d="M 363,194 A 124,124 0 0,1 363,318" fill="none" stroke="#F57C00" stroke-width="7" opacity="0.5"/>
+  <path d="M 363,318 A 124,124 0 0,1 256,380" fill="none" stroke="#F57C00" stroke-width="7" opacity="0.5"/>
+  <path d="M 256,380 A 124,124 0 0,1 149,318" fill="none" stroke="#F57C00" stroke-width="7" opacity="0.5"/>
+  <path d="M 149,318 A 124,124 0 0,1 149,194" fill="none" stroke="#F57C00" stroke-width="7" opacity="0.5"/>
+  <path d="M 149,194 A 124,124 0 0,1 256,133" fill="none" stroke="#F57C00" stroke-width="7" opacity="0.5"/>
+
+  <!-- Inner connections -->
+  <line x1="256" y1="133" x2="256" y2="380" stroke="#F57C00" stroke-width="4" opacity="0.3"/>
+  <line x1="149" y1="194" x2="363" y2="318" stroke="#F57C00" stroke-width="4" opacity="0.3"/>
+  <line x1="363" y1="194" x2="149" y2="318" stroke="#F57C00" stroke-width="4" opacity="0.3"/>
+
+  <!-- Student spheres (r=28) -->
+  <circle cx="363" cy="194" r="28" fill="url(#s1)" filter="url(#shadow)"/>
+  <ellipse cx="355" cy="183" rx="11" ry="7" fill="white" opacity="0.35"/>
+
+  <circle cx="363" cy="318" r="28" fill="url(#s2)" filter="url(#shadow)"/>
+  <ellipse cx="355" cy="307" rx="11" ry="7" fill="white" opacity="0.35"/>
+
+  <circle cx="256" cy="380" r="28" fill="url(#s3)" filter="url(#shadow)"/>
+  <ellipse cx="248" cy="369" rx="11" ry="7" fill="white" opacity="0.35"/>
+
+  <circle cx="149" cy="318" r="28" fill="url(#s4)" filter="url(#shadow)"/>
+  <ellipse cx="141" cy="307" rx="11" ry="7" fill="white" opacity="0.35"/>
+
+  <circle cx="149" cy="194" r="28" fill="url(#s5)" filter="url(#shadow)"/>
+  <ellipse cx="141" cy="183" rx="11" ry="7" fill="white" opacity="0.35"/>
+
+  <!-- Teacher sphere (r=47) -->
+  <circle cx="256" cy="133" r="47" fill="url(#teacher)" filter="url(#shadow)"/>
+  <ellipse cx="245" cy="118" rx="19" ry="11" fill="white" opacity="0.4"/>
+</svg>

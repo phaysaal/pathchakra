@@ -26,6 +26,8 @@
     <string name="create_class">ক্লাস তৈরি করুন</string>
     <string name="class_code">ক্লাস কোড</string>
     <string name="share_code_hint">এই কোডটি আপনার ছাত্রদের দিন</string>
+    <string name="rename_class">ক্লাসের নাম পরিবর্তন</string>
+    <string name="scan_to_join">এই ক্লাসে যোগ দিতে স্ক্যান করুন</string>
     <string name="slides">স্লাইড</string>
     <string name="add_slide">স্লাইড যোগ করুন</string>
     <string name="go_live">লাইভ শুরু করুন</string>
@@ -56,6 +58,14 @@
     <string name="page_x_of_y">পৃষ্ঠা %1$d / %2$d</string>
     <string name="draw_on_page">পৃষ্ঠায় আঁকুন</string>
 
+    <!-- Lessons (Talks) -->
+    <string name="add_lesson">পাঠ যোগ করুন</string>
+    <string name="new_lesson">নতুন পাঠ</string>
+    <string name="lesson_title">পাঠের শিরোনাম</string>
+    <string name="lesson_title_hint">যেমন: অধ্যায় ৩ — ভগ্নাংশ</string>
+    <string name="no_lessons_yet">এখনো কোনো পাঠ নেই</string>
+    <string name="no_lessons_hint">প্রথম পাঠ যোগ করতে নিচের বাটনে চাপুন</string>
+
     <!-- Session Detail -->
     <string name="no_slides_yet">এখনো কোনো স্লাইড নেই</string>
     <string name="no_slides_hint">প্রথম স্লাইড তৈরি করতে নিচের বাটনে চাপুন</string>
@@ -69,6 +79,16 @@
     <string name="choose_language">ভাষা নির্বাচন করুন</string>
     <string name="language_english">English</string>
     <string name="language_bangla">বাংলা</string>
+
+    <!-- Delete / Rename -->
+    <string name="delete">মুছুন</string>
+    <string name="delete_class">ক্লাস মুছুন</string>
+    <string name="delete_class_confirm">আপনি কি এই ক্লাসটি মুছতে চান? সমস্ত পাঠ ও স্লাইড স্থায়ীভাবে মুছে যাবে।</string>
+    <string name="rename_lesson">পাঠের নাম পরিবর্তন</string>
+    <string name="delete_lesson">পাঠ মুছুন</string>
+    <string name="delete_lesson_confirm">আপনি কি \"%1$s\" মুছতে চান? এই পাঠের সমস্ত স্লাইড মুছে যাবে।</string>
+    <string name="delete_slide">স্লাইড মুছুন</string>
+    <string name="delete_slide_confirm">আপনি কি স্লাইড %1$d মুছতে চান?</string>
 
     <!-- Common -->
     <string name="ok">ঠিক আছে</string>

@@ -22,17 +22,13 @@ cp "$APK_SRC" "$APK_DST"
 echo "==> Committing & pushing PathChakra..."
 cd "$ANDROID_DIR"
 git add -A
-git diff --cached --quiet || git commit -m "$MSG
-
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
+git diff --cached --quiet || git commit -m "$MSG"
 git push
 
 echo "==> Committing & pushing SeenSlide..."
 cd "$SEENSLIDE_DIR"
 git add modules/cloud/static/seenslide-teacher.apk
-git diff --cached --quiet || git commit -m "Update PathChakra APK
-
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
+git diff --cached --quiet || git commit -m "Update PathChakra APK"
 git push
 
 echo "==> Done!"
