@@ -3,13 +3,16 @@
     <string name="app_name">পাঠচক্র</string>
 
     <!-- Auth -->
-    <string name="login_title">স্বাগতম</string>
-    <string name="login_subtitle">শুরু করতে আপনার ইমেইল দিন</string>
-    <string name="email_hint">আপনার ইমেইল</string>
-    <string name="send_login_link">লগইন লিংক পাঠান</string>
-    <string name="check_email">ইমেইল দেখুন</string>
-    <string name="check_email_detail">আমরা %1$s তে একটি লগইন লিংক পাঠিয়েছি</string>
-    <string name="resend_link">আবার পাঠান</string>
+    <string name="enter_phone_subtitle">শুরু করতে আপনার ফোন নম্বর দিন</string>
+    <string name="phone_number">ফোন নম্বর</string>
+    <string name="your_name_optional">আপনার নাম (ঐচ্ছিক)</string>
+    <string name="next">পরবর্তী</string>
+    <string name="set_pin_title">পিন সেট করুন</string>
+    <string name="set_pin_subtitle">অ্যাপ সুরক্ষিত রাখতে ৪ সংখ্যার পিন দিন</string>
+    <string name="enter_pin">পিন দিন</string>
+    <string name="confirm_pin">পিন নিশ্চিত করুন</string>
+    <string name="enter_pin_to_unlock">চালু করতে পিন দিন</string>
+    <string name="start">শুরু করুন</string>
 
     <!-- Home -->
     <string name="my_classes">আমার ক্লাস</string>

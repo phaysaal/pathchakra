@@ -24,7 +24,8 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8000\"")
+            // Use production API — local server not needed for teacher app
+            // Change to "http://10.0.2.2:8000" for local dev with emulator
         }
         release {
             isMinifyEnabled = true

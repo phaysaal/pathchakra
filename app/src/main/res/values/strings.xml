@@ -3,13 +3,16 @@
     <string name="app_name">PathChakra</string>
 
     <!-- Auth -->
-    <string name="login_title">Welcome</string>
-    <string name="login_subtitle">Enter your email to start</string>
-    <string name="email_hint">Your email address</string>
-    <string name="send_login_link">Send Login Link</string>
-    <string name="check_email">Check your email</string>
-    <string name="check_email_detail">We sent a login link to %1$s</string>
-    <string name="resend_link">Resend Link</string>
+    <string name="enter_phone_subtitle">Enter your phone number to start</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="your_name_optional">Your Name (optional)</string>
+    <string name="next">Next</string>
+    <string name="set_pin_title">Set a PIN</string>
+    <string name="set_pin_subtitle">Choose a 4-digit PIN to protect your app</string>
+    <string name="enter_pin">Enter PIN</string>
+    <string name="confirm_pin">Confirm PIN</string>
+    <string name="enter_pin_to_unlock">Enter your PIN to continue</string>
+    <string name="start">Start</string>
 
     <!-- Home -->
     <string name="my_classes">My Classes</string>
