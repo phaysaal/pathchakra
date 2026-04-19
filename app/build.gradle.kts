@@ -22,6 +22,15 @@ android {
         buildConfigField("String", "API_BASE_URL", "\"https://web-production-2b06f.up.railway.app\"")
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("../pathchakra-release.jks")
+            storePassword = "pathchakra123"
+            keyAlias = "pathchakra"
+            keyPassword = "pathchakra123"
+        }
+    }
+
     buildTypes {
         debug {
             // Use production API — local server not needed for teacher app
@@ -30,6 +39,7 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

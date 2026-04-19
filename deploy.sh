@@ -7,7 +7,7 @@ set -e
 ANDROID_DIR="$(cd "$(dirname "$0")" && pwd)"
 SEENSLIDE_DIR="$HOME/code/hobby/SeenSlide"
 JAVA_HOME="$HOME/app/android-studio-panda2-linux/android-studio/jbr"
-APK_SRC="$ANDROID_DIR/app/build/outputs/apk/release/app-release-unsigned.apk"
+APK_SRC="$ANDROID_DIR/app/build/outputs/apk/release/app-release.apk"
 APK_DST="$SEENSLIDE_DIR/modules/cloud/static/seenslide-teacher.apk"
 
 MSG="${1:-Update PathChakra APK}"
