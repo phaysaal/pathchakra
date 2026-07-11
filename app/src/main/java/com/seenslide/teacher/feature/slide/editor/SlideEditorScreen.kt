@@ -85,6 +85,9 @@ fun SlideEditorScreen(
     var showExitConfirm by remember { mutableStateOf(false) }
     var showClearConfirm by remember { mutableStateOf(false) }
     var isFullscreen by remember { mutableStateOf(false) }
+    // Normal-mode draw/pan toggle: draw on = single finger draws; off =
+    // single finger pans. (Fullscreen has its own local toggle.)
+    var drawMode by remember { mutableStateOf(true) }
 
     var hasAudioPermission by remember {
         mutableStateOf(
@@ -401,6 +404,7 @@ fun SlideEditorScreen(
                     backgroundBitmap = viewModel.backgroundBitmap,
                     zoomable = true,
                     showGuides = viewModel.backgroundBitmap == null,
+                    drawEnabled = drawMode,
                     recordingStartTime = if (uiState.isRecording) {
                         viewModel.strokeRecorder.recordingStartTime
                     } else {
@@ -410,6 +414,31 @@ fun SlideEditorScreen(
                     onStrokePointAdded = viewModel::onStrokePointAdded,
                     onStrokeCompleted = viewModel::onStrokeCompleted,
                 )
+
+                // Draw / pan toggle overlaid on the canvas (top-left).
+                IconButton(
+                    onClick = { drawMode = !drawMode },
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(4.dp)
+                        .size(36.dp)
+                        .background(
+                            if (drawMode) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.surfaceVariant,
+                            RoundedCornerShape(50),
+                        ),
+                ) {
+                    Icon(
+                        if (drawMode) Icons.Default.Edit else Icons.Default.PanTool,
+                        contentDescription = if (drawMode) {
+                            stringResource(R.string.draw_mode_on)
+                        } else {
+                            stringResource(R.string.pan_mode_on)
+                        },
+                        tint = if (drawMode) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
             }
 
             Card(
