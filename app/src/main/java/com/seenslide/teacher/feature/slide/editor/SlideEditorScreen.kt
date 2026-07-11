@@ -201,6 +201,7 @@ fun SlideEditorScreen(
                     drawingState = viewModel.drawingState,
                     backgroundBitmap = viewModel.backgroundBitmap,
                     zoomable = true,
+                    showGuides = viewModel.backgroundBitmap == null,
                     recordingStartTime = if (uiState.isRecording) {
                         viewModel.strokeRecorder.recordingStartTime
                     } else {
@@ -335,6 +336,7 @@ fun SlideEditorScreen(
                     drawingState = viewModel.drawingState,
                     backgroundBitmap = viewModel.backgroundBitmap,
                     zoomable = true,
+                    showGuides = viewModel.backgroundBitmap == null,
                     recordingStartTime = if (uiState.isRecording) {
                         viewModel.strokeRecorder.recordingStartTime
                     } else {

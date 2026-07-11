@@ -1,5 +1,9 @@
 package com.seenslide.teacher.core.drawing
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+
 /**
  * Manages the drawing state: elements on canvas, undo/redo stack, current tool settings.
  */
@@ -9,6 +13,13 @@ class DrawingState {
 
     private val undoStack = mutableListOf<DrawElement>()
     private val redoStack = mutableListOf<DrawElement>()
+
+    // Compose-observable revision, bumped on EVERY mutation. The canvas
+    // reads it in its draw block, so external actions (undo/redo/clear
+    // from the toolbar) redraw immediately — they don't go through the
+    // canvas's own gesture path that used to be the only redraw trigger.
+    var revision by mutableStateOf(0)
+        private set
 
     var currentTool: DrawTool = DrawTool.PEN
     var currentColor: Long = 0xFF000000 // black
@@ -22,6 +33,7 @@ class DrawingState {
         _elements.add(element)
         undoStack.add(element)
         redoStack.clear()
+        revision++
         onElementAdded?.invoke(element)
     }
 
@@ -30,6 +42,7 @@ class DrawingState {
         val element = undoStack.removeAt(undoStack.size - 1)
         _elements.removeAll { it.id == element.id }
         redoStack.add(element)
+        revision++
         onElementRemoved?.invoke(element.id)
         return element
     }
@@ -39,6 +52,7 @@ class DrawingState {
         val element = redoStack.removeAt(redoStack.size - 1)
         _elements.add(element)
         undoStack.add(element)
+        revision++
         onElementAdded?.invoke(element)
         return element
     }
@@ -71,6 +85,7 @@ class DrawingState {
             erased.add(el.id)
             onElementRemoved?.invoke(el.id)
         }
+        if (toRemove.isNotEmpty()) revision++
         return erased
     }
 
@@ -78,6 +93,7 @@ class DrawingState {
         _elements.clear()
         undoStack.clear()
         redoStack.clear()
+        revision++
     }
 
     val canUndo: Boolean get() = undoStack.isNotEmpty()

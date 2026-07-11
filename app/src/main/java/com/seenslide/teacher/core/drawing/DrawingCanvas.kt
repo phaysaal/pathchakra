@@ -34,6 +34,9 @@ fun DrawingCanvas(
     // When true, two-finger drag/pinch pans and zooms the canvas while a
     // single finger draws — essential for meaningful editing on a phone.
     zoomable: Boolean = false,
+    // Draw a faint grid, border and centre cross so pan/zoom is legible on
+    // an otherwise featureless blank canvas. Off when there's a background.
+    showGuides: Boolean = false,
     onStrokeStarted: ((Stroke) -> Unit)? = null,
     onStrokePointAdded: ((List<StrokePoint>) -> Unit)? = null,
     onStrokeCompleted: ((DrawElement) -> Unit)? = null,
@@ -225,12 +228,47 @@ fun DrawingCanvas(
                 }
             },
     ) {
-        // Force dependency on drawVersion
+        // Depend on BOTH the local gesture counter and the shared
+        // DrawingState.revision, so undo/redo/clear from the toolbar
+        // redraw immediately (they don't touch drawVersion).
         drawVersion.let { _ ->
+            drawingState.revision.let { _ ->
             withTransform({
                 translate(offset.x, offset.y)
                 scale(scale, scale, pivot = Offset.Zero)
             }) {
+                // Reference guides for a blank canvas: border, thirds grid,
+                // and centre cross. Drawn inside the transform so they pan
+                // and zoom with the content — that's what makes the motion
+                // legible on plain white.
+                if (showGuides) {
+                    val grid = Color(0x11000000)
+                    val edge = Color(0x33000000)
+                    val cross = Color(0x22000000)
+                    val sw = 1f * scale.coerceAtLeast(1f)
+                    // thirds
+                    for (k in 1..2) {
+                        val gx = size.width * k / 3f
+                        val gy = size.height * k / 3f
+                        drawLine(grid, Offset(gx, 0f), Offset(gx, size.height), sw)
+                        drawLine(grid, Offset(0f, gy), Offset(size.width, gy), sw)
+                    }
+                    // centre cross
+                    val cx = size.width / 2f
+                    val cy = size.height / 2f
+                    val armX = size.width * 0.04f
+                    val armY = size.height * 0.04f
+                    drawLine(cross, Offset(cx - armX, cy), Offset(cx + armX, cy), sw)
+                    drawLine(cross, Offset(cx, cy - armY), Offset(cx, cy + armY), sw)
+                    // border
+                    drawRect(
+                        color = edge,
+                        topLeft = Offset.Zero,
+                        size = androidx.compose.ui.geometry.Size(size.width, size.height),
+                        style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2f * scale.coerceAtLeast(1f)),
+                    )
+                }
+
                 // Background: fit inside the canvas preserving the image's
                 // own aspect (letterboxed), NOT stretched — so a photo/PDF
                 // page isn't distorted while the slide stays a fixed aspect.
@@ -280,6 +318,7 @@ fun DrawingCanvas(
                         renderTextElement(element.textStroke, textMeasurer)
                     }
                 }
+            }
             }
         }
     }
