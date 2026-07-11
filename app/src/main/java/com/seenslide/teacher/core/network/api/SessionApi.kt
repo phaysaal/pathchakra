@@ -2,6 +2,7 @@ package com.seenslide.teacher.core.network.api
 
 import com.seenslide.teacher.core.network.model.CreateSessionRequest
 import com.seenslide.teacher.core.network.model.CreateTalkRequest
+import com.seenslide.teacher.core.network.model.NavigateSlideRequest
 import com.seenslide.teacher.core.network.model.RenameSessionRequest
 import com.seenslide.teacher.core.network.model.SessionListResponse
 import com.seenslide.teacher.core.network.model.SessionResponse
@@ -64,5 +65,27 @@ interface SessionApi {
     suspend fun deleteSlide(
         @Path("sessionId") sessionId: String,
         @Path("slideId") slideId: String,
+    ): Map<String, Any>
+
+    // --- Live Navigation ---
+
+    @POST("api/cloud/talk/{talkId}/go-live")
+    suspend fun goLive(@Path("talkId") talkId: String): Map<String, Any>
+
+    @POST("api/cloud/talk/{talkId}/navigate")
+    suspend fun navigateSlide(
+        @Path("talkId") talkId: String,
+        @Body request: NavigateSlideRequest,
+    ): Map<String, Any>
+
+    @POST("api/cloud/talk/{talkId}/end-live")
+    suspend fun endLive(@Path("talkId") talkId: String): Map<String, Any>
+
+    // --- Stroke Recording ---
+
+    @POST("api/cloud/talk/{talkId}/stroke-recording")
+    suspend fun uploadStrokeRecording(
+        @Path("talkId") talkId: String,
+        @Body recording: Map<String, @JvmSuppressWildcards Any>,
     ): Map<String, Any>
 }

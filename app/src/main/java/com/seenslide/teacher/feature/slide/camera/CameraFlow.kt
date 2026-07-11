@@ -6,6 +6,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.seenslide.teacher.R
 
 /**
  * Orchestrates camera capture -> review -> upload flow.
@@ -14,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 @Composable
 fun CameraFlow(
     viewModel: CameraViewModel,
-    onSlideUploaded: () -> Unit,
+    onSlideUploaded: (Int, String?) -> Unit,
     onClose: () -> Unit,
     onDrawOnPhoto: ((String) -> Unit)? = null,
 ) {
@@ -23,15 +25,25 @@ fun CameraFlow(
 
     LaunchedEffect(uiState.uploadSuccess) {
         if (uiState.uploadSuccess) {
-            Toast.makeText(context, "Slide saved!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                context.getString(R.string.slide_saved),
+                Toast.LENGTH_SHORT,
+            ).show()
+            val uploadedSlide = uiState.uploadedSlide
             viewModel.onUploadSuccessHandled()
-            onSlideUploaded()
+            if (uploadedSlide != null) {
+                onSlideUploaded(uploadedSlide.slideNumber, uploadedSlide.slideId)
+            } else {
+                onClose()
+            }
         }
     }
 
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
             Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            viewModel.dismissError()
         }
     }
 

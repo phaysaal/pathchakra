@@ -4,8 +4,11 @@ import android.graphics.BitmapFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.seenslide.teacher.core.data.SlideQueuedLocallyException
 import com.seenslide.teacher.core.data.SlideRepository
 import com.seenslide.teacher.core.media.ImageEnhancer
+import com.seenslide.teacher.core.network.model.SlideInfo
+import com.seenslide.teacher.core.ui.ErrorClassifier
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +21,9 @@ data class CameraUiState(
     val capturedPhotoPath: String? = null,
     val isUploading: Boolean = false,
     val uploadSuccess: Boolean = false,
+    val savedLocally: Boolean = false,
     val error: String? = null,
+    val uploadedSlide: SlideInfo? = null,
 )
 
 @HiltViewModel
@@ -26,10 +31,12 @@ class CameraViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val slideRepository: SlideRepository,
     private val imageEnhancer: ImageEnhancer,
+    private val errorClassifier: ErrorClassifier,
 ) : ViewModel() {
 
     val sessionId: String = savedStateHandle["sessionId"] ?: ""
     val talkId: String? = savedStateHandle.get<String>("talkId")?.takeIf { it != "none" }
+    private val replaceSlideNumber: Int? = savedStateHandle.get<Int>("replaceSlide")?.takeIf { it > 0 }
 
     private val _uiState = MutableStateFlow(CameraUiState())
     val uiState: StateFlow<CameraUiState> = _uiState
@@ -57,12 +64,29 @@ class CameraViewModel @Inject constructor(
                     result
                 }
 
-                slideRepository.uploadSlide(sessionId, talkId, bytes)
-                _uiState.value = _uiState.value.copy(isUploading = false, uploadSuccess = true)
-            } catch (e: Exception) {
+                val response = slideRepository.uploadSlide(sessionId, talkId, bytes, replaceSlideNumber)
                 _uiState.value = _uiState.value.copy(
                     isUploading = false,
-                    error = "Upload failed. Please try again.",
+                    uploadSuccess = true,
+                    uploadedSlide = response.slideNumber?.let {
+                        SlideInfo(
+                            slideNumber = it,
+                            slideId = response.slideId,
+                        )
+                    },
+                )
+            } catch (e: SlideQueuedLocallyException) {
+                _uiState.value = _uiState.value.copy(
+                    isUploading = false,
+                    uploadSuccess = true,
+                    savedLocally = true,
+                    uploadedSlide = SlideInfo(slideNumber = e.slideNumber, slideId = null),
+                )
+            } catch (e: Exception) {
+                android.util.Log.e("CameraViewModel", "Slide upload failed", e)
+                _uiState.value = _uiState.value.copy(
+                    isUploading = false,
+                    error = errorClassifier.classify(e),
                 )
             }
         }
@@ -70,5 +94,9 @@ class CameraViewModel @Inject constructor(
 
     fun onUploadSuccessHandled() {
         _uiState.value = CameraUiState()
+    }
+
+    fun dismissError() {
+        _uiState.value = _uiState.value.copy(error = null)
     }
 }

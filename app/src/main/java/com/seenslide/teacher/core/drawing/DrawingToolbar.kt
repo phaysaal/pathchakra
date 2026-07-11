@@ -21,13 +21,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Redo
 import androidx.compose.material.icons.automirrored.filled.Undo
+import androidx.compose.material.icons.filled.BorderColor
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.CropSquare
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Draw
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.FormatColorFill
-import androidx.compose.material.icons.filled.Highlight
+import androidx.compose.material.icons.filled.Fullscreen
+import androidx.compose.material.icons.filled.FullscreenExit
+import androidx.compose.material.icons.filled.GpsFixed
 import androidx.compose.material.icons.filled.HorizontalRule
 import androidx.compose.material.icons.filled.NorthEast
 import androidx.compose.material.icons.filled.TextFields
@@ -71,6 +75,7 @@ fun DrawingToolbar(
     onWidthChanged: (Float) -> Unit,
     onUndo: () -> Unit,
     onRedo: () -> Unit,
+    onExpandFullscreen: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -81,22 +86,30 @@ fun DrawingToolbar(
         color = MaterialTheme.colorScheme.surface,
     ) {
         Column {
-            // Compact bar — always visible: current tool indicator, color dot, undo/redo, expand toggle
+            // Compact bar: pen, marker, eraser, laser, shapes toggle, color, undo/redo, expand
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 4.dp, vertical = 2.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                // Current tool + quick access to pen/highlighter/eraser
-                ToolButtonCompact(Icons.Default.Edit, currentTool == DrawTool.PEN) {
+                ToolButtonCompact(Icons.Default.Draw, currentTool == DrawTool.PEN) {
                     onToolSelected(DrawTool.PEN)
                 }
-                ToolButtonCompact(Icons.Default.Highlight, currentTool == DrawTool.HIGHLIGHTER) {
+                ToolButtonCompact(Icons.Default.BorderColor, currentTool == DrawTool.HIGHLIGHTER) {
                     onToolSelected(DrawTool.HIGHLIGHTER)
                 }
-                ToolButtonCompact(Icons.Default.FormatColorFill, currentTool == DrawTool.ERASER) {
+                ToolButtonCompact(Icons.Default.CleaningServices, currentTool == DrawTool.ERASER) {
                     onToolSelected(DrawTool.ERASER)
+                }
+                ToolButtonCompact(Icons.Default.GpsFixed, currentTool == DrawTool.LASER) {
+                    onToolSelected(DrawTool.LASER)
+                }
+                ToolButtonCompact(
+                    Icons.Default.Category,
+                    currentTool in listOf(DrawTool.RECT, DrawTool.CIRCLE, DrawTool.LINE, DrawTool.ARROW),
+                ) {
+                    expanded = !expanded
                 }
 
                 Spacer(modifier = Modifier.width(4.dp))
@@ -133,7 +146,18 @@ fun DrawingToolbar(
                     )
                 }
 
-                // Expand/collapse toggle
+                // Fullscreen expand
+                if (onExpandFullscreen != null) {
+                    IconButton(onClick = onExpandFullscreen, modifier = Modifier.size(36.dp)) {
+                        Icon(
+                            Icons.Default.Fullscreen,
+                            contentDescription = "Fullscreen",
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
+                }
+
+                // Expand/collapse toggle for details
                 IconButton(onClick = { expanded = !expanded }, modifier = Modifier.size(36.dp)) {
                     Icon(
                         if (expanded) Icons.Default.ExpandMore else Icons.Default.ExpandLess,
@@ -143,7 +167,7 @@ fun DrawingToolbar(
                 }
             }
 
-            // Expandable section — shapes, colors, width slider
+            // Expandable section — shapes, text, colors, width slider
             AnimatedVisibility(
                 visible = expanded,
                 enter = expandVertically(),
@@ -198,6 +222,101 @@ fun DrawingToolbar(
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
+            }
+        }
+    }
+}
+
+/**
+ * Vertical floating toolbar for fullscreen drawing mode.
+ * Placed at the right edge of the screen.
+ */
+@Composable
+fun FloatingVerticalToolbar(
+    currentTool: DrawTool,
+    currentColor: Long,
+    canUndo: Boolean,
+    canRedo: Boolean,
+    onToolSelected: (DrawTool) -> Unit,
+    onColorSelected: (Long) -> Unit,
+    onUndo: () -> Unit,
+    onRedo: () -> Unit,
+    onExitFullscreen: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier,
+        shadowElevation = 8.dp,
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.92f),
+    ) {
+        Column(
+            modifier = Modifier.padding(6.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            ToolButtonCompact(Icons.Default.Draw, currentTool == DrawTool.PEN) {
+                onToolSelected(DrawTool.PEN)
+            }
+            ToolButtonCompact(Icons.Default.BorderColor, currentTool == DrawTool.HIGHLIGHTER) {
+                onToolSelected(DrawTool.HIGHLIGHTER)
+            }
+            ToolButtonCompact(Icons.Default.CleaningServices, currentTool == DrawTool.ERASER) {
+                onToolSelected(DrawTool.ERASER)
+            }
+            ToolButtonCompact(Icons.Default.GpsFixed, currentTool == DrawTool.LASER) {
+                onToolSelected(DrawTool.LASER)
+            }
+            ToolButtonCompact(
+                Icons.Default.Category,
+                currentTool in listOf(DrawTool.RECT, DrawTool.CIRCLE, DrawTool.LINE, DrawTool.ARROW),
+            ) {
+                // Cycle through shape tools
+                val shapeCycle = listOf(DrawTool.LINE, DrawTool.ARROW, DrawTool.RECT, DrawTool.CIRCLE)
+                val nextIdx = (shapeCycle.indexOf(currentTool) + 1) % shapeCycle.size
+                onToolSelected(shapeCycle[nextIdx])
+            }
+
+            // Color dot — tap to cycle colors
+            Box(
+                modifier = Modifier
+                    .size(28.dp)
+                    .clip(CircleShape)
+                    .background(Color(currentColor))
+                    .then(
+                        if (currentColor == 0xFFFFFFFFL) {
+                            Modifier.border(1.dp, Color.LightGray, CircleShape)
+                        } else Modifier
+                    )
+                    .clickable {
+                        val nextIdx = (COLORS.indexOf(currentColor) + 1) % COLORS.size
+                        onColorSelected(COLORS[nextIdx])
+                    },
+            )
+
+            // Undo / Redo
+            IconButton(onClick = onUndo, enabled = canUndo, modifier = Modifier.size(36.dp)) {
+                Icon(
+                    Icons.AutoMirrored.Filled.Undo, "Undo",
+                    modifier = Modifier.size(20.dp),
+                    tint = if (canUndo) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.outlineVariant,
+                )
+            }
+            IconButton(onClick = onRedo, enabled = canRedo, modifier = Modifier.size(36.dp)) {
+                Icon(
+                    Icons.AutoMirrored.Filled.Redo, "Redo",
+                    modifier = Modifier.size(20.dp),
+                    tint = if (canRedo) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.outlineVariant,
+                )
+            }
+
+            // Exit fullscreen
+            IconButton(onClick = onExitFullscreen, modifier = Modifier.size(36.dp)) {
+                Icon(
+                    Icons.Default.FullscreenExit,
+                    contentDescription = "Exit fullscreen",
+                    modifier = Modifier.size(20.dp),
+                )
             }
         }
     }

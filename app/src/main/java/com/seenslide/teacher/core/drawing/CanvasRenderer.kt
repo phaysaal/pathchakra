@@ -47,7 +47,7 @@ object CanvasRenderer {
             val p1 = points[i]
             val midX = (p0.x + p1.x) / 2f * w
             val midY = (p0.y + p1.y) / 2f * h
-            path.quadraticBezierTo(p0.x * w, p0.y * h, midX, midY)
+            path.quadraticTo(p0.x * w, p0.y * h, midX, midY)
         }
         val last = points.last()
         path.lineTo(last.x * w, last.y * h)

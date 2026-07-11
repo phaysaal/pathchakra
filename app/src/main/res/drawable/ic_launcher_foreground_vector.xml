@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Open book - left page -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,34 L54,80 Q44,76 28,76 L28,30 Q44,30 54,34 Z" />
+
+    <!-- Open book - right page -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,34 L54,80 Q64,76 80,76 L80,30 Q64,30 54,34 Z" />
+
+    <!-- Book spine shadow -->
+    <path
+        android:fillColor="#E8F5E9"
+        android:pathData="M52,34 L52,80 L56,80 L56,34 Z" />
+
+    <!-- Lines on left page -->
+    <path
+        android:strokeColor="#1B5E20"
+        android:strokeWidth="1.2"
+        android:pathData="M34,42 L50,44" />
+    <path
+        android:strokeColor="#1B5E20"
+        android:strokeWidth="1.2"
+        android:pathData="M34,48 L50,50" />
+    <path
+        android:strokeColor="#1B5E20"
+        android:strokeWidth="1.2"
+        android:pathData="M34,54 L48,56" />
+
+    <!-- Pen/pencil diagonal across right page -->
+    <path
+        android:fillColor="#FF6F00"
+        android:pathData="M74,38 L78,42 L64,68 L60,64 Z" />
+    <!-- Pen tip -->
+    <path
+        android:fillColor="#1B5E20"
+        android:pathData="M60,64 L64,68 L62,72 Z" />
+
+    <!-- Circle accent (chakra nod) -->
+    <path
+        android:fillColor="#1B5E20"
+        android:pathData="M54,24 m-5,0 a5,5 0,1 1,10 0 a5,5 0,1 1,-10 0" />
+</vector>

@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
     <radialGradient id="teacher" cx="40%" cy="35%" r="50%">
-      <stop offset="0%" stop-color="#42A5F5"/>
-      <stop offset="50%" stop-color="#1565C0"/>
-      <stop offset="100%" stop-color="#0D47A1"/>
+      <stop offset="0%" stop-color="#FFB74D"/>
+      <stop offset="50%" stop-color="#F57C00"/>
+      <stop offset="100%" stop-color="#E65100"/>
     </radialGradient>
     <radialGradient id="s1" cx="38%" cy="32%" r="50%">
       <stop offset="0%" stop-color="#81C784"/>
@@ -43,17 +43,19 @@
   </defs>
 
   <!-- Circular arcs (radius 124, center 256,256) -->
-  <path d="M 256,133 A 124,124 0 0,1 363,194" fill="none" stroke="#F57C00" stroke-width="7" opacity="0.5"/>
-  <path d="M 363,194 A 124,124 0 0,1 363,318" fill="none" stroke="#F57C00" stroke-width="7" opacity="0.5"/>
-  <path d="M 363,318 A 124,124 0 0,1 256,380" fill="none" stroke="#F57C00" stroke-width="7" opacity="0.5"/>
-  <path d="M 256,380 A 124,124 0 0,1 149,318" fill="none" stroke="#F57C00" stroke-width="7" opacity="0.5"/>
-  <path d="M 149,318 A 124,124 0 0,1 149,194" fill="none" stroke="#F57C00" stroke-width="7" opacity="0.5"/>
-  <path d="M 149,194 A 124,124 0 0,1 256,133" fill="none" stroke="#F57C00" stroke-width="7" opacity="0.5"/>
+  <path d="M 256,133 A 124,124 0 0,1 363,194" fill="none" stroke="#F57C00" stroke-width="10" opacity="0.5"/>
+  <path d="M 363,194 A 124,124 0 0,1 363,318" fill="none" stroke="#F57C00" stroke-width="10" opacity="0.5"/>
+  <path d="M 363,318 A 124,124 0 0,1 256,380" fill="none" stroke="#F57C00" stroke-width="10" opacity="0.5"/>
+  <path d="M 256,380 A 124,124 0 0,1 149,318" fill="none" stroke="#F57C00" stroke-width="10" opacity="0.5"/>
+  <path d="M 149,318 A 124,124 0 0,1 149,194" fill="none" stroke="#F57C00" stroke-width="10" opacity="0.5"/>
+  <path d="M 149,194 A 124,124 0 0,1 256,133" fill="none" stroke="#F57C00" stroke-width="10" opacity="0.5"/>
 
-  <!-- Inner connections -->
-  <line x1="256" y1="133" x2="256" y2="380" stroke="#F57C00" stroke-width="4" opacity="0.3"/>
-  <line x1="149" y1="194" x2="363" y2="318" stroke="#F57C00" stroke-width="4" opacity="0.3"/>
-  <line x1="363" y1="194" x2="149" y2="318" stroke="#F57C00" stroke-width="4" opacity="0.3"/>
+  <!-- Teacher to each student connections -->
+  <line x1="256" y1="133" x2="363" y2="194" stroke="#F57C00" stroke-width="6" opacity="0.4"/>
+  <line x1="256" y1="133" x2="363" y2="318" stroke="#F57C00" stroke-width="6" opacity="0.4"/>
+  <line x1="256" y1="133" x2="256" y2="380" stroke="#F57C00" stroke-width="6" opacity="0.4"/>
+  <line x1="256" y1="133" x2="149" y2="318" stroke="#F57C00" stroke-width="6" opacity="0.4"/>
+  <line x1="256" y1="133" x2="149" y2="194" stroke="#F57C00" stroke-width="6" opacity="0.4"/>
 
   <!-- Student spheres (r=28) -->
   <circle cx="363" cy="194" r="28" fill="url(#s1)" filter="url(#shadow)"/>

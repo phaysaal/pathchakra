@@ -5,9 +5,10 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class SlideUploadResponse(
-    val success: Boolean,
-    @Json(name = "slide_number") val slideNumber: Int? = null,
     @Json(name = "slide_id") val slideId: String? = null,
+    @Json(name = "slide_number") val slideNumber: Int? = null,
+    @Json(name = "session_id") val sessionId: String? = null,
+    @Json(name = "talk_id") val talkId: String? = null,
     val message: String? = null,
 )
 
@@ -23,4 +24,10 @@ data class SlideInfo(
 data class SlideListResponse(
     val slides: List<SlideInfo>,
     @Json(name = "total_slides") val totalSlides: Int,
+)
+
+@JsonClass(generateAdapter = true)
+data class SwapSlidesResponse(
+    val success: Boolean = false,
+    val message: String? = null,
 )

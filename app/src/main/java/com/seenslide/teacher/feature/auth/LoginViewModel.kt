@@ -3,11 +3,14 @@ package com.seenslide.teacher.feature.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.util.Log
+import com.seenslide.teacher.R
 import com.seenslide.teacher.core.auth.DeviceHelper
+import com.seenslide.teacher.core.ui.ErrorClassifier
 import com.seenslide.teacher.core.auth.PinStore
 import com.seenslide.teacher.core.auth.SimDetector
 import com.seenslide.teacher.core.network.api.TeacherAuthApi
 import com.seenslide.teacher.core.network.auth.TokenStore
+import com.seenslide.teacher.core.network.model.DeviceLoginRequest
 import com.seenslide.teacher.core.network.model.RegisterDeviceRequest
 import com.seenslide.teacher.core.network.model.UpdatePhoneRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,6 +44,7 @@ class LoginViewModel @Inject constructor(
     private val pinStore: PinStore,
     private val deviceHelper: DeviceHelper,
     private val simDetector: SimDetector,
+    private val errorClassifier: ErrorClassifier,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -106,7 +110,7 @@ class LoginViewModel @Inject constructor(
     fun submitPhone() {
         val phone = _uiState.value.phone.trim()
         if (phone.length < 6) {
-            _uiState.value = _uiState.value.copy(error = "Please enter a valid phone number")
+            _uiState.value = _uiState.value.copy(error = errorClassifier.getString(R.string.error_phone_incomplete))
             return
         }
         _uiState.value = _uiState.value.copy(step = LoginStep.PIN_SETUP, pin = "", confirmPin = "")
@@ -115,11 +119,11 @@ class LoginViewModel @Inject constructor(
     fun submitPin(onSuccess: () -> Unit) {
         val state = _uiState.value
         if (state.pin.length != 4) {
-            _uiState.value = state.copy(error = "PIN must be 4 digits")
+            _uiState.value = state.copy(error = errorClassifier.getString(R.string.error_pin_length))
             return
         }
         if (state.pin != state.confirmPin) {
-            _uiState.value = state.copy(error = "PINs do not match", confirmPin = "")
+            _uiState.value = state.copy(error = errorClassifier.getString(R.string.error_pin_mismatch), confirmPin = "")
             return
         }
 
@@ -151,7 +155,7 @@ class LoginViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = "Registration failed. Check your internet.",
+                    error = errorClassifier.classify(e),
                 )
             }
         }
@@ -159,10 +163,40 @@ class LoginViewModel @Inject constructor(
 
     fun verifyPin(onSuccess: () -> Unit) {
         val pin = _uiState.value.pin
-        if (pinStore.verifyPin(pin)) {
-            onSuccess()
-        } else {
-            _uiState.value = _uiState.value.copy(pin = "", error = "Wrong PIN")
+        if (!pinStore.verifyPin(pin)) {
+            _uiState.value = _uiState.value.copy(pin = "", error = errorClassifier.getString(R.string.error_wrong_pin))
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            try {
+                val storedPhone = pinStore.getStoredPhone()
+                    ?: throw IllegalStateException("Phone number not found on device")
+                val response = teacherAuthApi.deviceLogin(
+                    DeviceLoginRequest(
+                        phoneNumber = storedPhone,
+                        deviceId = deviceHelper.getDeviceId(),
+                    ),
+                )
+
+                tokenStore.saveAuth(
+                    token = response.sessionToken,
+                    email = "${storedPhone}@teacher.pathchakra.app",
+                    userId = response.userId,
+                    name = null,
+                )
+
+                _uiState.value = _uiState.value.copy(isLoading = false)
+                onSuccess()
+            } catch (e: Exception) {
+                Log.e("LoginVM", "Device login refresh failed", e)
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    pin = "",
+                    error = errorClassifier.classify(e),
+                )
+            }
         }
     }
 

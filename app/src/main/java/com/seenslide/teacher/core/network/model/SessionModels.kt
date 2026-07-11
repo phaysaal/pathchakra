@@ -61,6 +61,11 @@ data class UpdateTalkRequest(
 )
 
 @JsonClass(generateAdapter = true)
+data class NavigateSlideRequest(
+    @Json(name = "slide_number") val slideNumber: Int,
+)
+
+@JsonClass(generateAdapter = true)
 data class SessionListResponse(
     val sessions: List<SessionResponse>,
 )

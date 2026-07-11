@@ -34,14 +34,18 @@ import com.seenslide.teacher.R
 @Composable
 fun CreateSessionScreen(
     viewModel: CreateSessionViewModel,
-    onSessionCreated: (String) -> Unit,
+    onSessionCreated: (String, String) -> Unit,
     onBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     // Navigate when session is created
     LaunchedEffect(uiState.createdSessionId) {
-        uiState.createdSessionId?.let { onSessionCreated(it) }
+        val createdId = uiState.createdSessionId
+        val createdName = uiState.createdSessionName
+        if (createdId != null && createdName != null) {
+            onSessionCreated(createdId, createdName)
+        }
     }
 
     Scaffold(

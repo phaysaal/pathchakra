@@ -38,7 +38,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.seenslide.teacher.R
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import java.io.File
@@ -71,7 +73,10 @@ fun CameraScreen(
             modifier = Modifier.fillMaxSize().background(Color.Black),
             contentAlignment = Alignment.Center,
         ) {
-            Text("Camera permission is required", color = Color.White)
+            Text(
+                text = stringResource(R.string.camera_permission_required),
+                color = Color.White,
+            )
         }
         return
     }

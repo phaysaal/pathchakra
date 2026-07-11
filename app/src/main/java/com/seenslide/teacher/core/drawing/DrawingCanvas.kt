@@ -37,6 +37,7 @@ fun DrawingCanvas(
     var currentStroke by remember { mutableStateOf<Stroke?>(null) }
     var shapeStart by remember { mutableStateOf<Offset?>(null) }
     var shapePreview by remember { mutableStateOf<ShapeStroke?>(null) }
+    var laserPoint by remember { mutableStateOf<Offset?>(null) }
     // Track version to force recomposition
     var drawVersion by remember { mutableStateOf(0) }
     val textMeasurer = rememberTextMeasurer()
@@ -75,6 +76,10 @@ fun DrawingCanvas(
                         }
                         DrawTool.RECT, DrawTool.CIRCLE, DrawTool.LINE, DrawTool.ARROW -> {
                             shapeStart = Offset(nx, ny)
+                        }
+                        DrawTool.LASER -> {
+                            laserPoint = Offset(nx, ny)
+                            drawVersion++
                         }
                         DrawTool.TEXT -> {
                             // Text placement handled separately via dialog
@@ -124,6 +129,10 @@ fun DrawingCanvas(
                                             drawVersion++
                                         }
                                     }
+                                    DrawTool.LASER -> {
+                                        laserPoint = Offset(mx, my)
+                                        drawVersion++
+                                    }
                                     else -> {}
                                 }
                             }
@@ -156,6 +165,10 @@ fun DrawingCanvas(
                             shapePreview = null
                             drawVersion++
                         }
+                        DrawTool.LASER -> {
+                            laserPoint = null
+                            drawVersion++
+                        }
                         else -> {}
                     }
                 }
@@ -178,6 +191,19 @@ fun DrawingCanvas(
                 with(CanvasRenderer) {
                     renderElements(listOf(DrawElement.ShapeElement(shape)), null)
                 }
+            }
+
+            laserPoint?.let { point ->
+                drawCircle(
+                    color = Color(0xFFE53935),
+                    radius = size.minDimension * 0.018f,
+                    center = Offset(point.x * size.width, point.y * size.height),
+                )
+                drawCircle(
+                    color = Color(0x66FF5252),
+                    radius = size.minDimension * 0.035f,
+                    center = Offset(point.x * size.width, point.y * size.height),
+                )
             }
 
             // Render text elements with TextMeasurer

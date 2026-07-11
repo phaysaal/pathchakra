@@ -24,10 +24,10 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("../pathchakra-release.jks")
-            storePassword = "pathchakra123"
-            keyAlias = "pathchakra"
-            keyPassword = "pathchakra123"
+            storeFile = file("../ostudi-release.jks")
+            storePassword = "ostudi123"
+            keyAlias = "ostudi"
+            keyPassword = "ostudi123"
         }
     }
 
@@ -59,6 +59,13 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+    applicationVariants.all {
+        outputs.all {
+            val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            output.outputFileName = "ostudi-${buildType.name}.apk"
+        }
     }
 }
 
@@ -117,4 +124,12 @@ dependencies {
 
     // QR Code
     implementation(libs.zxing.core)
+
+    // WorkManager
+    implementation(libs.workmanager)
+    implementation(libs.hilt.work)
+    ksp(libs.hilt.work.compiler)
+
+    // Splash Screen
+    implementation(libs.splashscreen)
 }

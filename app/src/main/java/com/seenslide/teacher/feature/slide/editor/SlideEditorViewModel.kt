@@ -5,13 +5,18 @@ import android.graphics.BitmapFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.seenslide.teacher.BuildConfig
+import com.seenslide.teacher.core.data.SlideQueuedLocallyException
 import com.seenslide.teacher.core.data.SlideRepository
 import com.seenslide.teacher.core.drawing.DrawElement
 import com.seenslide.teacher.core.drawing.DrawTool
 import com.seenslide.teacher.core.drawing.DrawingState
 import com.seenslide.teacher.core.drawing.StrokePoint
 import com.seenslide.teacher.core.media.ImageEnhancer
-import com.seenslide.teacher.core.network.websocket.SeenSlideWebSocket
+import com.seenslide.teacher.core.media.VoiceStreamingService
+import com.seenslide.teacher.core.network.model.SlideInfo
+import com.seenslide.teacher.core.network.websocket.OStudiWebSocket
+import com.seenslide.teacher.core.ui.ErrorClassifier
 import com.seenslide.teacher.core.recording.StrokeRecorder
 import com.seenslide.teacher.core.recording.StrokeRecordingStore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +25,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import javax.inject.Inject
 
 data class SlideEditorUiState(
@@ -27,6 +34,7 @@ data class SlideEditorUiState(
     val isRecording: Boolean = false,
     val isSaving: Boolean = false,
     val saveSuccess: Boolean = false,
+    val savedLocally: Boolean = false,
     val error: String? = null,
     val showTextDialog: Boolean = false,
     val currentTool: DrawTool = DrawTool.PEN,
@@ -34,21 +42,27 @@ data class SlideEditorUiState(
     val currentWidth: Float = 3f,
     val canUndo: Boolean = false,
     val canRedo: Boolean = false,
+    val hasUnsavedChanges: Boolean = false,
+    val uploadedSlide: SlideInfo? = null,
 )
 
 @HiltViewModel
 class SlideEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val slideRepository: SlideRepository,
-    private val webSocket: SeenSlideWebSocket,
+    private val webSocket: OStudiWebSocket,
     private val imageEnhancer: ImageEnhancer,
     private val recordingStore: StrokeRecordingStore,
+    private val voiceStreamingService: VoiceStreamingService,
+    private val okHttpClient: OkHttpClient,
+    private val errorClassifier: ErrorClassifier,
 ) : ViewModel() {
 
     val sessionId: String = savedStateHandle["sessionId"] ?: ""
     val talkId: String? = savedStateHandle.get<String>("talkId")?.takeIf { it != "none" }
     val mode: String = savedStateHandle["mode"] ?: "blank" // "blank", "photo:{path}", "pdf"
     private val slideId: String = savedStateHandle.get<String>("slideId") ?: sessionId
+    private val replaceSlideNumber: Int? = savedStateHandle.get<Int>("replaceSlide")?.takeIf { it > 0 }
 
     val drawingState = DrawingState()
     val strokeRecorder = StrokeRecorder()
@@ -60,12 +74,36 @@ class SlideEditorViewModel @Inject constructor(
         private set
 
     init {
-        // Load background image if photo mode
-        if (mode.startsWith("photo:")) {
-            val path = mode.removePrefix("photo:")
-            viewModelScope.launch {
-                backgroundBitmap = withContext(Dispatchers.IO) {
-                    BitmapFactory.decodeFile(path)
+        when {
+            mode.startsWith("photo:") -> {
+                val path = mode.removePrefix("photo:")
+                viewModelScope.launch {
+                    backgroundBitmap = withContext(Dispatchers.IO) {
+                        BitmapFactory.decodeFile(path)
+                    }
+                }
+            }
+            mode.startsWith("edit:") -> {
+                // edit:{talkId}:{slideNumber} — download existing slide as background
+                val parts = mode.removePrefix("edit:").split(":")
+                if (parts.size == 2) {
+                    val editTalkId = parts[0]
+                    val slideNum = parts[1]
+                    val base = BuildConfig.API_BASE_URL.trimEnd('/')
+                    val url = "$base/api/cloud/talk/$editTalkId/slides/$slideNum"
+                    viewModelScope.launch {
+                        backgroundBitmap = withContext(Dispatchers.IO) {
+                            try {
+                                val request = Request.Builder().url(url).build()
+                                val response = okHttpClient.newCall(request).execute()
+                                response.use { resp ->
+                                    resp.body?.byteStream()?.let { BitmapFactory.decodeStream(it) }
+                                }
+                            } catch (e: Exception) {
+                                null
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -88,11 +126,13 @@ class SlideEditorViewModel @Inject constructor(
 
     fun onUndo() {
         drawingState.undo()
+        markCanvasChanged()
         refreshUndoRedo()
     }
 
     fun onRedo() {
         drawingState.redo()
+        markCanvasChanged()
         refreshUndoRedo()
     }
 
@@ -102,6 +142,26 @@ class SlideEditorViewModel @Inject constructor(
 
     fun dismissTextDialog() {
         _uiState.value = _uiState.value.copy(showTextDialog = false)
+    }
+
+    fun dismissError() {
+        _uiState.value = _uiState.value.copy(error = null)
+    }
+
+    fun addTextElement(element: DrawElement.TextElement) {
+        drawingState.addElement(element)
+        onStrokeCompleted(element)
+        dismissTextDialog()
+    }
+
+    fun clearCanvas() {
+        if (drawingState.elements.isEmpty()) return
+        drawingState.clear()
+        _uiState.value = _uiState.value.copy(
+            canUndo = false,
+            canRedo = false,
+            hasUnsavedChanges = true,
+        )
     }
 
     // --- Live streaming ---
@@ -118,7 +178,27 @@ class SlideEditorViewModel @Inject constructor(
 
     // --- Recording ---
 
-    fun startRecording() {
+    /**
+     * Start recording strokes + voice together.
+     * Voice requires RECORD_AUDIO permission — call [startRecordingWithVoice]
+     * from the UI after permission is granted, or [startRecordingStrokesOnly]
+     * if permission was denied.
+     */
+    fun startRecordingWithVoice() {
+        talkId?.let { tid ->
+            strokeRecorder.startRecording(tid)
+            _uiState.value = _uiState.value.copy(isRecording = true)
+
+            viewModelScope.launch {
+                val started = voiceStreamingService.start(sessionId, talkId, viewModelScope)
+                if (!started) {
+                    android.util.Log.w("SlideEditorVM", "Voice streaming failed to start, strokes still recording")
+                }
+            }
+        }
+    }
+
+    fun startRecordingStrokesOnly() {
         talkId?.let { tid ->
             strokeRecorder.startRecording(tid)
             _uiState.value = _uiState.value.copy(isRecording = true)
@@ -129,8 +209,13 @@ class SlideEditorViewModel @Inject constructor(
         strokeRecorder.stopRecording()
         _uiState.value = _uiState.value.copy(isRecording = false)
 
-        // Save recording locally
         viewModelScope.launch {
+            // Stop voice streaming
+            if (voiceStreamingService.isStreaming) {
+                voiceStreamingService.stop()
+            }
+
+            // Save stroke recording locally
             talkId?.let { tid ->
                 recordingStore.save(tid, strokeRecorder.toJson())
             }
@@ -162,6 +247,7 @@ class SlideEditorViewModel @Inject constructor(
             strokeRecorder.recordElement(element)
         }
 
+        markCanvasChanged()
         refreshUndoRedo()
     }
 
@@ -174,19 +260,41 @@ class SlideEditorViewModel @Inject constructor(
                 val bytes = withContext(Dispatchers.Default) {
                     imageEnhancer.compressToBytes(canvasBitmap, quality = 90)
                 }
-                slideRepository.uploadSlide(sessionId, talkId, bytes)
-                _uiState.value = _uiState.value.copy(isSaving = false, saveSuccess = true)
-            } catch (e: Exception) {
+                canvasBitmap.recycle()
+                val response = slideRepository.uploadSlide(sessionId, talkId, bytes, replaceSlideNumber)
                 _uiState.value = _uiState.value.copy(
                     isSaving = false,
-                    error = "Could not save slide",
+                    saveSuccess = true,
+                    hasUnsavedChanges = false,
+                    uploadedSlide = response.slideNumber?.let {
+                        SlideInfo(
+                            slideNumber = it,
+                            slideId = response.slideId,
+                        )
+                    },
+                )
+            } catch (e: SlideQueuedLocallyException) {
+                // Saved to disk — treat as success, will upload when online
+                _uiState.value = _uiState.value.copy(
+                    isSaving = false,
+                    saveSuccess = true,
+                    savedLocally = true,
+                    hasUnsavedChanges = false,
+                    uploadedSlide = SlideInfo(slideNumber = e.slideNumber, slideId = null),
+                )
+            } catch (e: Exception) {
+                canvasBitmap.recycle()
+                android.util.Log.e("SlideEditorVM", "Slide upload failed", e)
+                _uiState.value = _uiState.value.copy(
+                    isSaving = false,
+                    error = errorClassifier.classify(e),
                 )
             }
         }
     }
 
     fun onSaveSuccessHandled() {
-        _uiState.value = _uiState.value.copy(saveSuccess = false)
+        _uiState.value = _uiState.value.copy(saveSuccess = false, savedLocally = false)
     }
 
     private fun refreshUndoRedo() {
@@ -196,9 +304,15 @@ class SlideEditorViewModel @Inject constructor(
         )
     }
 
+    private fun markCanvasChanged() {
+        _uiState.value = _uiState.value.copy(hasUnsavedChanges = true)
+    }
+
     override fun onCleared() {
         super.onCleared()
         if (_uiState.value.isLive) webSocket.disconnect()
         if (_uiState.value.isRecording) stopRecording()
+        backgroundBitmap?.recycle()
+        backgroundBitmap = null
     }
 }

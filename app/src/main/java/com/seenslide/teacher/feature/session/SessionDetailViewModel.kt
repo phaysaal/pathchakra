@@ -3,9 +3,12 @@ package com.seenslide.teacher.feature.session
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.seenslide.teacher.core.network.api.SessionApi
+import com.seenslide.teacher.BuildConfig
+import com.seenslide.teacher.core.data.SessionRepository
+import com.seenslide.teacher.core.data.SlideRepository
+import com.seenslide.teacher.core.network.NetworkMonitor
+import com.seenslide.teacher.core.ui.ErrorClassifier
 import com.seenslide.teacher.core.network.model.CreateTalkRequest
-import com.seenslide.teacher.core.network.model.RenameSessionRequest
 import com.seenslide.teacher.core.network.model.SessionResponse
 import com.seenslide.teacher.core.network.model.TalkResponse
 import com.seenslide.teacher.core.network.model.UpdateTalkRequest
@@ -14,7 +17,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import javax.inject.Inject
 
 data class SessionDetailUiState(
@@ -22,6 +31,7 @@ data class SessionDetailUiState(
     val talks: List<TalkResponse> = emptyList(),
     val isLoading: Boolean = true,
     val error: String? = null,
+    val isOffline: Boolean = false,
     val showCreateTalk: Boolean = false,
     val newTalkTitle: String = "",
     val isCreatingTalk: Boolean = false,
@@ -33,13 +43,19 @@ data class SessionDetailUiState(
     val showRenameTalk: TalkResponse? = null,
     val renameTalkText: String = "",
     val showDeleteTalkConfirm: TalkResponse? = null,
+    val isDuplicating: Boolean = false,
+    val duplicatedTalkTitle: String? = null,
 )
 
 @HiltViewModel
 class SessionDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val sessionApi: SessionApi,
+    private val sessionRepository: SessionRepository,
+    private val slideRepository: SlideRepository,
     private val tokenStore: TokenStore,
+    private val networkMonitor: NetworkMonitor,
+    private val okHttpClient: OkHttpClient,
+    private val errorClassifier: ErrorClassifier,
 ) : ViewModel() {
 
     val sessionId: String = savedStateHandle["sessionId"] ?: ""
@@ -47,31 +63,62 @@ class SessionDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SessionDetailUiState())
     val uiState: StateFlow<SessionDetailUiState> = _uiState
 
+    private var wasOffline = false
+
     init {
         loadSession()
+        networkMonitor.isOnline
+            .onEach { online ->
+                val comingBackOnline = wasOffline && online
+                wasOffline = !online
+                _uiState.value = _uiState.value.copy(isOffline = !online)
+                if (comingBackOnline) loadSession()
+            }
+            .launchIn(viewModelScope)
     }
 
     fun loadSession() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
+
+            // Show cached data immediately
+            val cachedSessions = sessionRepository.getSessions()
+            val cachedSession = cachedSessions.find { it.sessionId == sessionId }
+            val cachedTalks = sessionRepository.getTalks(sessionId)
+            if (cachedSession != null || cachedTalks.isNotEmpty()) {
+                _uiState.value = SessionDetailUiState(
+                    session = cachedSession,
+                    talks = cachedTalks,
+                    isLoading = true,
+                )
+            }
+
+            // Refresh from network
             try {
-                val sessionsResponse = sessionApi.listSessions()
-                val session = sessionsResponse.sessions.find { it.sessionId == sessionId }
-
-                val talksResponse = sessionApi.listTalks(sessionId)
-
+                val sessions = sessionRepository.refreshSessions()
+                val session = sessions.find { it.sessionId == sessionId }
+                val talks = sessionRepository.refreshTalks(sessionId)
                 _uiState.value = SessionDetailUiState(
                     session = session,
-                    talks = talksResponse.talks,
+                    talks = talks,
                     isLoading = false,
                 )
             } catch (e: Exception) {
-                _uiState.value = SessionDetailUiState(
-                    isLoading = false,
-                    error = "Could not load class details",
-                )
+                if (cachedSession != null || cachedTalks.isNotEmpty()) {
+                    // Have cache — just stop loading
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                } else {
+                    _uiState.value = SessionDetailUiState(
+                        isLoading = false,
+                        error = errorClassifier.classify(e),
+                    )
+                }
             }
         }
+    }
+
+    fun dismissError() {
+        _uiState.value = _uiState.value.copy(error = null)
     }
 
     // --- Rename Session ---
@@ -97,7 +144,7 @@ class SessionDetailViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                sessionApi.renameSession(sessionId, RenameSessionRequest(newName))
+                sessionRepository.renameSession(sessionId, newName)
                 _uiState.value = _uiState.value.copy(
                     showRename = false,
                     session = _uiState.value.session?.copy(presenterName = newName),
@@ -105,7 +152,7 @@ class SessionDetailViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     showRename = false,
-                    error = "Could not rename class",
+                    error = errorClassifier.classify(e),
                 )
             }
         }
@@ -124,12 +171,12 @@ class SessionDetailViewModel @Inject constructor(
     fun deleteSession(onDeleted: () -> Unit) {
         viewModelScope.launch {
             try {
-                sessionApi.deleteSession(sessionId)
+                sessionRepository.deleteSession(sessionId)
                 onDeleted()
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     showDeleteConfirm = false,
-                    error = "Could not delete class",
+                    error = errorClassifier.classify(e),
                 )
             }
         }
@@ -167,7 +214,7 @@ class SessionDetailViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isCreatingTalk = true)
             try {
                 val name = tokenStore.userName.first()
-                val talk = sessionApi.createTalk(
+                val talk = sessionRepository.createTalk(
                     sessionId,
                     CreateTalkRequest(title = title, presenterName = name),
                 )
@@ -182,7 +229,7 @@ class SessionDetailViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isCreatingTalk = false,
-                    error = "Could not create lesson",
+                    error = errorClassifier.classify(e),
                 )
             }
         }
@@ -221,7 +268,7 @@ class SessionDetailViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                sessionApi.updateTalk(talk.talkId, UpdateTalkRequest(title = newTitle))
+                sessionRepository.updateTalk(talk.talkId, UpdateTalkRequest(title = newTitle))
                 _uiState.value = _uiState.value.copy(
                     showRenameTalk = null,
                     talks = _uiState.value.talks.map {
@@ -231,7 +278,7 @@ class SessionDetailViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     showRenameTalk = null,
-                    error = "Could not rename lesson",
+                    error = errorClassifier.classify(e),
                 )
             }
         }
@@ -252,7 +299,7 @@ class SessionDetailViewModel @Inject constructor(
         val talk = _uiState.value.showDeleteTalkConfirm ?: return
         viewModelScope.launch {
             try {
-                sessionApi.deleteTalk(talk.talkId)
+                sessionRepository.deleteTalk(talk.talkId)
                 _uiState.value = _uiState.value.copy(
                     showDeleteTalkConfirm = null,
                     talks = _uiState.value.talks.filter { it.talkId != talk.talkId },
@@ -260,7 +307,77 @@ class SessionDetailViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     showDeleteTalkConfirm = null,
-                    error = "Could not delete lesson",
+                    error = errorClassifier.classify(e),
+                )
+            }
+        }
+    }
+
+    fun upsertTalk(talkId: String, title: String, slideCount: Int) {
+        val current = _uiState.value.talks
+        val existing = current.find { it.talkId == talkId }
+        val updated = if (existing != null) {
+            current.map {
+                if (it.talkId == talkId) it.copy(title = title, slideCount = slideCount) else it
+            }
+        } else {
+            current + TalkResponse(
+                talkId = talkId,
+                sessionId = sessionId,
+                title = title,
+                slideCount = slideCount,
+            )
+        }
+        _uiState.value = _uiState.value.copy(talks = updated)
+    }
+
+    fun removeTalkById(talkId: String) {
+        _uiState.value = _uiState.value.copy(
+            talks = _uiState.value.talks.filter { it.talkId != talkId },
+        )
+    }
+
+    // --- Duplicate Talk ---
+
+    fun dismissDuplicated() {
+        _uiState.value = _uiState.value.copy(duplicatedTalkTitle = null)
+    }
+
+    fun duplicateTalk(talk: TalkResponse) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isDuplicating = true)
+            try {
+                val name = tokenStore.userName.first()
+                val newTalk = sessionRepository.createTalk(
+                    sessionId,
+                    CreateTalkRequest(title = "${talk.title} (copy)", presenterName = name),
+                )
+
+                // Copy slides: download each from source talk, upload to new talk
+                val base = BuildConfig.API_BASE_URL.trimEnd('/')
+                for (slideNum in 1..talk.slideCount) {
+                    val imageBytes = withContext(Dispatchers.IO) {
+                        val url = "$base/api/cloud/talk/${talk.talkId}/slides/$slideNum"
+                        val request = Request.Builder().url(url).build()
+                        val response = okHttpClient.newCall(request).execute()
+                        response.use { it.body?.bytes() }
+                    } ?: continue
+                    try {
+                        slideRepository.uploadSlide(sessionId, newTalk.talkId, imageBytes)
+                    } catch (_: Exception) {
+                        // SlideQueuedLocallyException or network error — continue with next
+                    }
+                }
+
+                _uiState.value = _uiState.value.copy(
+                    isDuplicating = false,
+                    duplicatedTalkTitle = newTalk.title,
+                    talks = _uiState.value.talks + newTalk.copy(slideCount = talk.slideCount),
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isDuplicating = false,
+                    error = errorClassifier.classify(e),
                 )
             }
         }

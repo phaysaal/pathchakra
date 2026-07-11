@@ -11,13 +11,20 @@ import com.seenslide.teacher.core.drawing.DrawElement
 import com.seenslide.teacher.core.drawing.DrawingState
 import com.seenslide.teacher.core.drawing.StrokePoint
 import com.seenslide.teacher.core.media.VoiceStreamingService
+import com.seenslide.teacher.core.network.api.SessionApi
+import com.seenslide.teacher.core.network.model.NavigateSlideRequest
 import com.seenslide.teacher.core.network.model.SlideInfo
-import com.seenslide.teacher.core.network.websocket.SeenSlideWebSocket
+import com.seenslide.teacher.R
+import com.seenslide.teacher.core.network.websocket.OStudiWebSocket
+import com.seenslide.teacher.core.network.websocket.WsConnectionState
+import com.seenslide.teacher.core.ui.ErrorClassifier
 import com.seenslide.teacher.core.recording.StrokeRecorder
 import com.seenslide.teacher.core.recording.StrokeRecordingStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,15 +37,18 @@ data class LiveClassUiState(
     val isLoading: Boolean = true,
     val error: String? = null,
     val showEndConfirmation: Boolean = false,
+    val wsState: WsConnectionState = WsConnectionState.DISCONNECTED,
 )
 
 @HiltViewModel
 class LiveClassViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val slideRepository: SlideRepository,
-    private val webSocket: SeenSlideWebSocket,
+    private val sessionApi: SessionApi,
+    private val webSocket: OStudiWebSocket,
     private val voiceService: VoiceStreamingService,
     private val recordingStore: StrokeRecordingStore,
+    private val errorClassifier: ErrorClassifier,
 ) : ViewModel() {
 
     val sessionId: String = savedStateHandle["sessionId"] ?: ""
@@ -55,6 +65,12 @@ class LiveClassViewModel @Inject constructor(
 
     init {
         loadSlides()
+        // Observe WebSocket connection state
+        webSocket.connectionState
+            .onEach { wsState ->
+                _uiState.value = _uiState.value.copy(wsState = wsState)
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun loadSlides() {
@@ -66,7 +82,7 @@ class LiveClassViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = "Could not load slides",
+                    error = errorClassifier.classify(e),
                 )
             }
         }
@@ -74,12 +90,21 @@ class LiveClassViewModel @Inject constructor(
 
     fun slideImageUrl(slideNumber: Int): String {
         val base = BuildConfig.API_BASE_URL.trimEnd('/')
-        return "$base/api/cloud/slides/$sessionId/$slideNumber"
+        return "$base/api/cloud/talk/$talkId/slides/$slideNumber"
     }
 
     // --- Go Live ---
 
     fun goLive() {
+        viewModelScope.launch {
+            try {
+                // Notify server this talk is now live
+                sessionApi.goLive(talkId)
+            } catch (e: Exception) {
+                // Non-fatal: live navigation still works via WebSocket fallback
+            }
+        }
+
         webSocket.connect(groupId)
 
         // Start stroke recording
@@ -99,7 +124,7 @@ class LiveClassViewModel @Inject constructor(
             val started = voiceService.start(sessionId, talkId, viewModelScope)
             _uiState.value = _uiState.value.copy(isVoiceStreaming = started)
             if (!started) {
-                _uiState.value = _uiState.value.copy(error = "Could not start voice")
+                _uiState.value = _uiState.value.copy(error = errorClassifier.getString(R.string.error_voice_start))
             }
         }
     }
@@ -119,6 +144,10 @@ class LiveClassViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(showEndConfirmation = false)
     }
 
+    fun dismissError() {
+        _uiState.value = _uiState.value.copy(error = null)
+    }
+
     fun endClass() {
         viewModelScope.launch {
             // Stop voice
@@ -126,9 +155,29 @@ class LiveClassViewModel @Inject constructor(
                 voiceService.stop()
             }
 
-            // Stop stroke recording and save
+            // Stop stroke recording, save locally, and upload
             strokeRecorder.stopRecording()
-            recordingStore.save(talkId, strokeRecorder.toJson())
+            val recordingJson = strokeRecorder.toJson()
+            recordingStore.save(talkId, recordingJson)
+
+            // Upload stroke recording to server
+            try {
+                val slides = mutableListOf<Map<String, Any>>()
+                for (i in 0 until recordingJson.length()) {
+                    val obj = recordingJson.getJSONObject(i)
+                    slides.add(jsonObjectToMap(obj))
+                }
+                sessionApi.uploadStrokeRecording(talkId, mapOf("slides" to slides))
+            } catch (_: Exception) {
+                // Non-fatal — local copy saved, can retry later
+            }
+
+            // Notify server that live session ended
+            try {
+                sessionApi.endLive(talkId)
+            } catch (_: Exception) {
+                // Non-fatal
+            }
 
             // Disconnect WebSocket
             webSocket.disconnect()
@@ -168,9 +217,16 @@ class LiveClassViewModel @Inject constructor(
         // Clear drawing state for new slide
         drawingState.clear()
 
-        // Notify viewers via WebSocket
+        // Notify viewers via WebSocket + update server live state
         if (_uiState.value.isLive) {
             webSocket.sendSlideChange(slideNumber)
+            viewModelScope.launch {
+                try {
+                    sessionApi.navigateSlide(talkId, NavigateSlideRequest(slideNumber))
+                } catch (_: Exception) {
+                    // Non-fatal: WebSocket already sent the change
+                }
+            }
         }
 
         // Update stroke recorder
@@ -215,6 +271,37 @@ class LiveClassViewModel @Inject constructor(
     private fun currentSlideId(): String {
         return _uiState.value.slides.getOrNull(_uiState.value.currentSlideIndex)?.slideId
             ?: sessionId
+    }
+
+    /** Convert a JSONObject to a Map for Retrofit serialization. */
+    private fun jsonObjectToMap(obj: org.json.JSONObject): Map<String, Any> {
+        val map = mutableMapOf<String, Any>()
+        for (key in obj.keys()) {
+            val value = obj.get(key)
+            map[key] = when (value) {
+                is org.json.JSONObject -> jsonObjectToMap(value)
+                is org.json.JSONArray -> jsonArrayToList(value)
+                org.json.JSONObject.NULL -> ""
+                else -> value
+            }
+        }
+        return map
+    }
+
+    private fun jsonArrayToList(arr: org.json.JSONArray): List<Any> {
+        val list = mutableListOf<Any>()
+        for (i in 0 until arr.length()) {
+            val value = arr.get(i)
+            list.add(
+                when (value) {
+                    is org.json.JSONObject -> jsonObjectToMap(value)
+                    is org.json.JSONArray -> jsonArrayToList(value)
+                    org.json.JSONObject.NULL -> ""
+                    else -> value
+                },
+            )
+        }
+        return list
     }
 
     override fun onCleared() {

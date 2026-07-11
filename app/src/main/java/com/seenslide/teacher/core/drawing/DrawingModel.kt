@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 enum class DrawTool {
     PEN, HIGHLIGHTER, ERASER,
     RECT, CIRCLE, LINE, ARROW,
+    LASER,
     TEXT,
 }
 

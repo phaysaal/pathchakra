@@ -21,5 +21,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SeenSlide Teacher"
+rootProject.name = "OStudi"
 include(":app")

@@ -2,7 +2,9 @@ package com.seenslide.teacher.core.network.di
 
 import com.seenslide.teacher.BuildConfig
 import com.seenslide.teacher.core.network.api.AuthApi
+import com.seenslide.teacher.core.network.api.IdentityApi
 import com.seenslide.teacher.core.network.api.SessionApi
+import com.seenslide.teacher.core.network.api.SlideAiApi
 import com.seenslide.teacher.core.network.api.SlideApi
 import com.seenslide.teacher.core.network.api.TeacherAuthApi
 import com.seenslide.teacher.core.network.api.VoiceApi
@@ -69,9 +71,17 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideSlideAiApi(retrofit: Retrofit): SlideAiApi = retrofit.create(SlideAiApi::class.java)
+
+    @Provides
+    @Singleton
     fun provideVoiceApi(retrofit: Retrofit): VoiceApi = retrofit.create(VoiceApi::class.java)
 
     @Provides
     @Singleton
     fun provideTeacherAuthApi(retrofit: Retrofit): TeacherAuthApi = retrofit.create(TeacherAuthApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideIdentityApi(retrofit: Retrofit): IdentityApi = retrofit.create(IdentityApi::class.java)
 }
