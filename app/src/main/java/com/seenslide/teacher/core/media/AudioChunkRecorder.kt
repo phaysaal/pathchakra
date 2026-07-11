@@ -48,12 +48,19 @@ class AudioChunkRecorder @Inject constructor(
     private val chunkLock = Object()
 
     private var startTimeMs: Long = 0L
+    private var totalBytes: Long = 0L
     val isRecording: Boolean get() = _isRecording
     val recordingStartTime: Long get() = startTimeMs
+    val sampleRate: Int get() = SAMPLE_RATE
 
-    /** Elapsed seconds since recording started. */
+    /**
+     * Position on the AUDIO timeline: bytes captured / bytes-per-second.
+     * NOT wall clock — wall time drifts ahead whenever frames are dropped,
+     * and slide markers stamped with wall time then point past the audio
+     * they belong to (same bug the desktop recorder had).
+     */
     val elapsedSeconds: Double
-        get() = if (_isRecording) (System.currentTimeMillis() - startTimeMs) / 1000.0 else 0.0
+        get() = synchronized(chunkLock) { totalBytes / (2.0 * SAMPLE_RATE) }
 
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     fun start(): Boolean {
@@ -87,6 +94,7 @@ class AudioChunkRecorder @Inject constructor(
 
             synchronized(chunkLock) {
                 chunkBuffer.reset()
+                totalBytes = 0L
             }
 
             // Spawn recording thread
@@ -97,6 +105,7 @@ class AudioChunkRecorder @Inject constructor(
                     if (read > 0) {
                         synchronized(chunkLock) {
                             chunkBuffer.write(buffer, 0, read)
+                            totalBytes += read
                         }
                     }
                 }

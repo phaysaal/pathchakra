@@ -24,3 +24,14 @@ data class ChunkUploadResponse(
     @Json(name = "chunk_size") val chunkSize: Int? = null,
     @Json(name = "total_size") val totalSize: Int? = null,
 )
+
+@JsonClass(generateAdapter = true)
+data class MarkerItem(
+    @Json(name = "slide_number") val slideNumber: Int,
+    @Json(name = "timestamp_seconds") val timestampSeconds: Double,
+)
+
+@JsonClass(generateAdapter = true)
+data class SyncMarkersRequest(
+    val markers: List<MarkerItem>,
+)

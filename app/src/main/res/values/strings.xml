@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">পাঠচক্র</string>
+    <string name="app_name">OStudi</string>
 
     <!-- Auth -->
     <string name="enter_phone_subtitle">Enter your phone number to start</string>
@@ -13,12 +13,33 @@
     <string name="confirm_pin">Confirm PIN</string>
     <string name="enter_pin_to_unlock">Enter your PIN to continue</string>
     <string name="start">Start</string>
+    <string name="phone_step_title">Enter Phone Number</string>
+    <string name="phone_step_subtitle">Use your teacher phone number so this device can stay connected to your classes.</string>
+    <string name="pin_setup_step_title">Create 4-Digit PIN</string>
+    <string name="pin_setup_step_subtitle">Use a simple PIN you can remember. You will use it every time you open the app.</string>
+    <string name="pin_lock_step_title">Unlock OStudi</string>
+    <string name="pin_lock_step_subtitle">Enter your PIN to open your classes and lessons.</string>
+    <string name="phone_number_hint">Example: 017XXXXXXXX</string>
+    <string name="name_hint">This helps identify your account. You can leave it empty.</string>
+    <string name="pin_hint">Choose exactly 4 digits</string>
+    <string name="confirm_pin_hint">Enter the same 4 digits again</string>
+    <string name="pin_lock_helper">Use the same PIN you created on this device.</string>
+    <string name="unlock">Unlock</string>
+    <string name="loading_account">Loading your teacher account…</string>
+    <string name="setting_up_account">Setting up…</string>
+    <string name="verifying_pin">Verifying…</string>
 
     <!-- Home -->
     <string name="my_classes">My Classes</string>
     <string name="start_new_class">Start New Class</string>
     <string name="no_classes_yet">No classes yet</string>
     <string name="no_classes_hint">Tap the button below to start your first class</string>
+    <string name="home_overview_title">Teacher Dashboard</string>
+    <string name="home_overview_count">%1$d classes ready</string>
+    <string name="home_overview_hint">Open a class to manage lessons, share the class code, or start teaching.</string>
+    <string name="create_class_cta">Create Class</string>
+    <string name="active_classes_title">Active Classes</string>
+    <string name="classes_problem_loading">Could not load your classes</string>
 
     <!-- Session -->
     <string name="class_name">Class Name</string>
@@ -28,6 +49,16 @@
     <string name="share_code_hint">Share this code with your students</string>
     <string name="rename_class">Rename Class</string>
     <string name="scan_to_join">Scan to join this class</string>
+    <string name="show_qr_code">Show QR Code</string>
+    <string name="share_with_students">Share With Students</string>
+    <string name="share_join_instruction">Students can join with this code or by scanning the QR code.</string>
+    <string name="class_overview">Class Overview</string>
+    <string name="class_overview_hint">Keep your class code ready, then create lessons one by one.</string>
+    <string name="lessons_count">Lessons</string>
+    <string name="lessons_section_title">Lessons</string>
+    <string name="lessons_section_subtitle">%1$d lessons ready for this class</string>
+    <string name="create_first_lesson">Create First Lesson</string>
+    <string name="lesson_card_hint">Open this lesson to manage slides and teaching materials.</string>
     <string name="slides">Slides</string>
     <string name="add_slide">Add Slide</string>
     <string name="go_live">Go Live</string>
@@ -40,23 +71,100 @@
     <string name="save_slide">Save Slide</string>
     <string name="discard">Discard</string>
     <string name="retake">Retake</string>
+    <string name="use_photo">Use Photo</string>
+    <string name="draw_on_photo">Draw on Photo</string>
+    <string name="review_photo_title">Review Your Photo</string>
+    <string name="review_photo_hint">Check if the page is clear and easy to read before saving it as a slide.</string>
+    <string name="photo_preview_title">Photo Preview</string>
+    <string name="photo_preview_hint">If the text looks unclear, retake the photo or turn on auto-enhance.</string>
+    <string name="auto_enhance">Auto-Enhance</string>
+    <string name="auto_enhance_hint">Makes writing darker and the page cleaner for students.</string>
+    <string name="uploading_photo">Saving Photo…</string>
+    <string name="uploading_photo_hint">Please wait while this slide is prepared and uploaded.</string>
+    <string name="camera_permission_required">Camera permission is required to take a slide photo.</string>
 
     <!-- Live -->
     <string name="live_class">Live Class</string>
     <string name="end_class_confirm">Are you sure you want to end this class? Voice recording and live sync will stop.</string>
     <string name="no_slides_draw">No slides — draw on blank canvas</string>
     <string name="end">End</string>
+    <string name="live_now">LIVE</string>
+    <string name="ready_to_go_live">Ready</string>
+    <string name="voice_on">Voice On</string>
+    <string name="voice_off">Voice Off</string>
+    <string name="reconnecting">Reconnecting…</string>
+    <string name="current_slide_label">Current Slide</string>
+    <string name="live_mode_label">Mode</string>
+    <string name="live_stage_hint">This is the slide students should follow right now.</string>
+    <string name="live_drawing_hint">Draw directly on the slide while teaching.</string>
+    <string name="live_controls_hint">Use these controls while you are teaching live.</string>
+    <string name="previous_slide">Previous Slide</string>
+    <string name="next_slide">Next Slide</string>
+    <string name="turn_voice_on">Turn Voice On</string>
+    <string name="turn_voice_off">Turn Voice Off</string>
 
     <!-- Slide Editor -->
     <string name="slide_editor">Slide Editor</string>
     <string name="add_text">Add Text</string>
     <string name="type_here">Type here</string>
     <string name="slide_saved">Slide saved!</string>
+    <string name="slide_saved_locally">Saved locally — will upload when online</string>
+    <string name="editing_status">Editing</string>
+    <string name="recording_status">Recording</string>
+    <string name="saving_status">Saving</string>
+    <string name="photo_slide_source">Photo Slide</string>
+    <string name="pdf_slide_source">PDF Page</string>
+    <string name="blank_slide_source">Blank Slide</string>
+    <string name="pen_tool">Pen</string>
+    <string name="highlighter_tool">Highlighter</string>
+    <string name="eraser_tool">Eraser</string>
+    <string name="rectangle_tool">Rectangle</string>
+    <string name="circle_tool">Circle</string>
+    <string name="line_tool">Line</string>
+    <string name="arrow_tool">Arrow</string>
+    <string name="laser_tool">Laser Pointer</string>
+    <string name="text_tool">Text</string>
+    <string name="leave_editor_title">Leave Editor?</string>
+    <string name="leave_editor_message">You have unsaved changes. If you leave now, this slide will not be saved.</string>
+    <string name="leave_without_saving">Leave Without Saving</string>
+    <string name="clear_canvas">Clear Canvas</string>
+    <string name="clear_canvas_confirm">Remove all drawing from this slide?</string>
+    <string name="start_recording">Start recording</string>
+    <string name="stop_recording">Stop recording</string>
+    <string name="unsaved_changes">Unsaved changes</string>
+    <string name="ready_to_save">Ready to save</string>
+    <string name="current_tool_label">Current tool: %1$s</string>
+    <string name="stroke_width_label">Stroke width: %1$d</string>
+    <string name="editor_toolbar_hint">Choose a tool below, then draw directly on the slide.</string>
+    <string name="draw_on_slide_hint">Draw, erase, or add text on this teaching slide.</string>
+    <string name="blank_board_hint">Use this blank board like a clean classroom whiteboard.</string>
 
     <!-- PDF -->
     <string name="open_pdf_file">Open PDF File</string>
     <string name="page_x_of_y">Page %1$d of %2$d</string>
     <string name="draw_on_page">Draw on Page</string>
+    <string name="pdf_import_title">Import From PDF</string>
+    <string name="pdf_import_hint">Choose one page at a time, then save it directly or draw on it first.</string>
+    <string name="open_pdf_title">Open a PDF File</string>
+    <string name="open_pdf_hint">Select a PDF book or note file to turn one page into a slide.</string>
+    <string name="pdf_page_preview_title">Page Preview</string>
+    <string name="pdf_page_preview_hint">Check that the page is readable before adding it to the lesson.</string>
+    <string name="choose_page_title">Choose a Page</string>
+    <string name="choose_page_hint">Move one page at a time until you reach the page you want to use.</string>
+    <string name="previous_page">Previous</string>
+    <string name="next_page">Next</string>
+    <string name="use_this_page">Use This Page</string>
+    <string name="draw_on_this_page">Draw on This Page</string>
+    <string name="saving_page">Saving Page…</string>
+    <string name="saving_page_hint">Please wait while this page is prepared and uploaded.</string>
+
+    <!-- PDF Crop -->
+    <string name="crop_page_title">Select Region</string>
+    <string name="crop_page_hint">Drag on the page to select the part you want to use as a slide. You can also use the full page.</string>
+    <string name="crop_drag_hint">Drag your finger on the page to select a region</string>
+    <string name="crop_and_save">Crop &amp; Save</string>
+    <string name="use_full_page">Full Page</string>
+    <string name="reset_selection">Reset selection</string>
 
     <!-- Lessons (Talks) -->
     <string name="add_lesson">Add Lesson</string>
@@ -69,6 +177,22 @@
     <!-- Session Detail -->
     <string name="no_slides_yet">No slides yet</string>
     <string name="no_slides_hint">Tap the button below to create your first slide</string>
+    <string name="lesson_workspace">Lesson Workspace</string>
+    <string name="lesson_workspace_hint">Create slides first, then start live teaching when you are ready.</string>
+    <string name="slide_creation_tools">Slide Creation Tools</string>
+    <string name="slide_creation_tools_hint">Choose the easiest way to prepare your next teaching slide.</string>
+    <string name="live_teaching">Live Teaching</string>
+    <string name="live_teaching_hint">Use this after your lesson slides are ready.</string>
+    <string name="slide_library">Slide Library</string>
+    <string name="tap_slide_to_open">Tap any slide to open it full screen.</string>
+    <string name="lesson_problem_loading">Could not load this lesson right now.</string>
+    <string name="create_first_slide">Create First Slide</string>
+    <string name="blank_whiteboard_slide">Start a blank whiteboard-style slide</string>
+    <string name="slide_maker_title">Text &amp; Shapes</string>
+    <string name="slide_maker_subtitle">Build a slide with text boxes and shapes</string>
+    <string name="camera_slide_subtitle">Capture a handwritten page or note</string>
+    <string name="pdf_slide_subtitle">Pick one page from a PDF file</string>
+    <string name="open_live_class">Open live teaching mode</string>
     <string name="take_photo_subtitle">Take a photo of a book page</string>
     <string name="blank_canvas_subtitle">Draw on a blank white canvas</string>
     <string name="from_pdf_subtitle">Select a page from a PDF file</string>
@@ -79,6 +203,15 @@
     <string name="choose_language">Choose Language</string>
     <string name="language_english">English</string>
     <string name="language_bangla">বাংলা</string>
+    <string name="language_french">Français</string>
+
+    <!-- Slide Management -->
+    <string name="replace_slide">Replace Slide</string>
+    <string name="replace_with_photo">Replace with Photo</string>
+    <string name="replace_with_canvas">Replace with Drawing</string>
+    <string name="replace_with_pdf">Replace from PDF</string>
+    <string name="move_up">Move Up</string>
+    <string name="move_down">Move Down</string>
 
     <!-- Delete / Rename -->
     <string name="delete">Delete</string>
@@ -97,4 +230,128 @@
     <string name="loading">Loading…</string>
     <string name="error_network">No internet connection</string>
     <string name="error_generic">Something went wrong</string>
+    <string name="more_actions">More actions</string>
+
+    <!-- ErrorClassifier messages -->
+    <string name="error_no_internet">No internet connection. Please check your network.</string>
+    <string name="error_timeout">Connection timed out. Try again.</string>
+    <string name="error_connection_problem">Connection problem. Try again later.</string>
+    <string name="error_auth_expired">Session expired. Please log in again.</string>
+    <string name="error_not_found">Content not found.</string>
+    <string name="error_file_too_large">File is too large to upload.</string>
+    <string name="error_server">Server error. Please try again later.</string>
+    <string name="error_unknown">Something went wrong. Please try again.</string>
+    <string name="error_pdf_open">Could not open PDF file.</string>
+    <string name="error_voice_start">Could not start voice recording.</string>
+    <string name="error_empty_class_name">Please enter a class name.</string>
+    <string name="error_phone_incomplete">Phone number looks incomplete.</string>
+    <string name="error_pin_length">PIN must be 4 digits.</string>
+    <string name="error_pin_mismatch">PINs do not match.</string>
+    <string name="error_wrong_pin">Wrong PIN.</string>
+
+    <!-- Offline -->
+    <string name="offline_banner">You are offline — showing saved data</string>
+    <string name="offline_action_unavailable">This action needs internet connection</string>
+
+    <!-- Upload Queue -->
+    <string name="pending_uploads">%1$d slides waiting to upload</string>
+    <string name="pending_upload_single">1 slide waiting to upload</string>
+    <string name="upload_complete">Slide uploaded successfully</string>
+    <string name="from_gallery">From Gallery</string>
+    <string name="gallery_slide_subtitle">Pick photos from your phone</string>
+    <string name="uploading_gallery_progress">Uploading %1$d of %2$d…</string>
+    <string name="share_class_invite">Join my class \"%1$s\" on OStudi!\nClass code: %2$s</string>
+    <string name="share_class">Share Class</string>
+    <string name="duplicate_lesson">Duplicate Lesson</string>
+    <string name="duplicating_lesson">Duplicating…</string>
+    <string name="lesson_duplicated">Lesson duplicated</string>
+    <string name="settings">Settings</string>
+    <string name="logout">Logout</string>
+    <string name="logout_confirm">Are you sure you want to log out? You will need to enter your phone number and PIN again.</string>
+    <string name="clear_cache">Clear Image Cache</string>
+    <string name="cache_cleared">Image cache cleared</string>
+    <string name="app_version">App Version</string>
+    <string name="account_section">Account</string>
+    <string name="storage_section">Storage</string>
+    <string name="about_section">About</string>
+
+    <!-- Attendance -->
+    <string name="students">Students</string>
+    <string name="attendance">Attendance</string>
+    <string name="attendance_section">Attendance</string>
+    <string name="attendance_section_hint">Manage your student list and take daily attendance.</string>
+    <string name="roll_call">Roll Call</string>
+    <string name="add_student">Add Student</string>
+    <string name="edit_student">Edit Student</string>
+    <string name="delete_student">Delete Student</string>
+    <string name="delete_student_confirm">Are you sure you want to remove %1$s from this class?</string>
+    <string name="student_name">Student Name</string>
+    <string name="student_name_hint">e.g. Rahim Uddin</string>
+    <string name="roll_number">Roll Number</string>
+    <string name="roll_number_hint">Optional</string>
+    <string name="roll_number_label">Roll: %1$d</string>
+    <string name="student_count">%1$d students</string>
+    <string name="no_students_yet">No students yet</string>
+    <string name="no_students_hint">Tap the + button to add students to this class.</string>
+    <string name="attendance_date">Date</string>
+    <string name="change_date">Change</string>
+    <string name="present">Present</string>
+    <string name="absent">Absent</string>
+    <string name="present_count">%1$d / %2$d present</string>
+    <string name="all_present">All</string>
+    <string name="all_absent">None</string>
+    <string name="save_attendance">Save Attendance</string>
+    <string name="attendance_saved">Attendance saved!</string>
+    <string name="no_students_for_attendance">No students in this class</string>
+    <string name="add_students_first">Add students first from the Students screen.</string>
+    <string name="attendance_history">History</string>
+    <string name="no_attendance_history">No attendance records yet</string>
+    <string name="no_attendance_history_hint">Take attendance using Roll Call to start tracking.</string>
+    <string name="student_attendance_summary">Student Summary</string>
+    <string name="total_class_days">%1$d class days recorded</string>
+    <string name="total_students_enrolled">%1$d students enrolled</string>
+    <string name="present_out_of">Present %1$d out of %2$d days</string>
+    <string name="add_many_students">Add Many</string>
+    <string name="bulk_add_hint">Type one student name per line. Roll numbers will be assigned automatically.</string>
+    <string name="bulk_add_placeholder">Rahim\nKarim\nFatema\nAyesha</string>
+    <string name="bulk_add_count">%1$d names found</string>
+    <string name="bulk_students_added">students added</string>
+    <string name="export_attendance">Export</string>
+    <string name="daily_records">Daily Records</string>
+    <string name="student_deleted">removed</string>
+    <string name="undo">Undo</string>
+    <string name="data_section">Data</string>
+    <string name="export_backup">Export Backup</string>
+    <string name="import_backup">Restore Backup</string>
+    <string name="backup_exported">Backup file ready to share</string>
+    <string name="backup_restored">Data restored successfully!</string>
+    <string name="share_report">Share Report</string>
+
+    <!-- Sync -->
+    <string name="pending_changes">%d changes pending sync</string>
+    <string name="syncing">Syncing…</string>
+
+    <!-- Theme -->
+    <string name="appearance_section">Appearance</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="theme_system">Follow System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+
+    <!-- Notes -->
+    <string name="notes">Notes</string>
+    <string name="class_notes">Class Notes</string>
+    <string name="add_note">Add Note</string>
+    <string name="edit_note">Edit Note</string>
+    <string name="note_hint">Write a note…</string>
+    <string name="note_deleted">Note deleted</string>
+    <string name="no_notes_yet">No notes yet</string>
+    <string name="no_notes_hint">Tap + to add your first note for this class</string>
+
+    <!-- Auto-backup -->
+    <string name="auto_backup">Auto Backup</string>
+    <string name="auto_backup_hint">Daily backup to local storage</string>
+    <string name="last_auto_backup">Last auto-backup: %s</string>
+    <string name="auto_backup_never">Never</string>
+    <string name="record_narration">Record narration (slide by slide)</string>
 </resources>

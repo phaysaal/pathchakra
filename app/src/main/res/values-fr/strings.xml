@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OStudi</string>
+
+    <!-- Auth -->
+    <string name="enter_phone_subtitle">Entrez votre numéro de téléphone pour commencer</string>
+    <string name="phone_number">Numéro de téléphone</string>
+    <string name="your_name_optional">Votre nom (facultatif)</string>
+    <string name="next">Suivant</string>
+    <string name="set_pin_title">Définir un PIN</string>
+    <string name="set_pin_subtitle">Choisissez un code PIN à 4 chiffres pour protéger votre application</string>
+    <string name="enter_pin">Entrez le PIN</string>
+    <string name="confirm_pin">Confirmez le PIN</string>
+    <string name="enter_pin_to_unlock">Entrez votre PIN pour continuer</string>
+    <string name="start">Commencer</string>
+    <string name="phone_step_title">Entrez le numéro de téléphone</string>
+    <string name="phone_step_subtitle">Utilisez votre numéro d\'enseignant pour que cet appareil reste connecté à vos classes.</string>
+    <string name="pin_setup_step_title">Créer un PIN à 4 chiffres</string>
+    <string name="pin_setup_step_subtitle">Choisissez un PIN facile à retenir. Vous l\'utiliserez à chaque ouverture de l\'application.</string>
+    <string name="pin_lock_step_title">Déverrouiller OStudi</string>
+    <string name="pin_lock_step_subtitle">Entrez votre PIN pour accéder à vos classes et leçons.</string>
+    <string name="phone_number_hint">Exemple : 017XXXXXXXX</string>
+    <string name="name_hint">Cela aide à identifier votre compte. Vous pouvez laisser vide.</string>
+    <string name="pin_hint">Choisissez exactement 4 chiffres</string>
+    <string name="confirm_pin_hint">Entrez les mêmes 4 chiffres</string>
+    <string name="pin_lock_helper">Utilisez le même PIN que vous avez créé sur cet appareil.</string>
+    <string name="unlock">Déverrouiller</string>
+    <string name="loading_account">Chargement de votre compte enseignant…</string>
+    <string name="setting_up_account">Configuration…</string>
+    <string name="verifying_pin">Vérification…</string>
+
+    <!-- Home -->
+    <string name="my_classes">Mes classes</string>
+    <string name="start_new_class">Nouvelle classe</string>
+    <string name="no_classes_yet">Aucune classe pour le moment</string>
+    <string name="no_classes_hint">Appuyez sur le bouton ci-dessous pour créer votre première classe</string>
+    <string name="home_overview_title">Tableau de bord</string>
+    <string name="home_overview_count">%1$d classes prêtes</string>
+    <string name="home_overview_hint">Ouvrez une classe pour gérer les leçons, partager le code ou commencer à enseigner.</string>
+    <string name="create_class_cta">Créer une classe</string>
+    <string name="active_classes_title">Classes actives</string>
+    <string name="classes_problem_loading">Impossible de charger vos classes</string>
+
+    <!-- Session -->
+    <string name="class_name">Nom de la classe</string>
+    <string name="class_name_hint">ex. Maths Classe 5</string>
+    <string name="create_class">Créer une classe</string>
+    <string name="class_code">Code de classe</string>
+    <string name="share_code_hint">Partagez ce code avec vos élèves</string>
+    <string name="rename_class">Renommer la classe</string>
+    <string name="scan_to_join">Scannez pour rejoindre cette classe</string>
+    <string name="show_qr_code">Afficher le QR Code</string>
+    <string name="share_with_students">Partager avec les élèves</string>
+    <string name="share_join_instruction">Les élèves peuvent rejoindre avec ce code ou en scannant le QR code.</string>
+    <string name="class_overview">Aperçu de la classe</string>
+    <string name="class_overview_hint">Gardez votre code de classe prêt, puis créez les leçons une par une.</string>
+    <string name="lessons_count">Leçons</string>
+    <string name="lessons_section_title">Leçons</string>
+    <string name="lessons_section_subtitle">%1$d leçons prêtes pour cette classe</string>
+    <string name="create_first_lesson">Créer la première leçon</string>
+    <string name="lesson_card_hint">Ouvrez cette leçon pour gérer les diapositives et le matériel pédagogique.</string>
+    <string name="slides">Diapositives</string>
+    <string name="add_slide">Ajouter une diapositive</string>
+    <string name="go_live">Commencer en direct</string>
+    <string name="end_class">Terminer la classe</string>
+
+    <!-- Slide creation -->
+    <string name="take_photo">Prendre une photo</string>
+    <string name="blank_canvas">Tableau blanc</string>
+    <string name="from_pdf">Depuis un PDF</string>
+    <string name="save_slide">Enregistrer la diapositive</string>
+    <string name="discard">Annuler</string>
+    <string name="retake">Reprendre</string>
+    <string name="use_photo">Utiliser la photo</string>
+    <string name="draw_on_photo">Dessiner sur la photo</string>
+    <string name="review_photo_title">Vérifiez votre photo</string>
+    <string name="review_photo_hint">Vérifiez que la page est claire et lisible avant de l\'enregistrer comme diapositive.</string>
+    <string name="photo_preview_title">Aperçu de la photo</string>
+    <string name="photo_preview_hint">Si le texte est flou, reprenez la photo ou activez l\'amélioration automatique.</string>
+    <string name="auto_enhance">Amélioration auto</string>
+    <string name="auto_enhance_hint">Rend l\'écriture plus foncée et la page plus nette pour les élèves.</string>
+    <string name="uploading_photo">Enregistrement de la photo…</string>
+    <string name="uploading_photo_hint">Veuillez patienter pendant la préparation et l\'envoi de cette diapositive.</string>
+    <string name="camera_permission_required">L\'autorisation de la caméra est nécessaire pour prendre une photo.</string>
+
+    <!-- Live -->
+    <string name="live_class">Classe en direct</string>
+    <string name="end_class_confirm">Voulez-vous vraiment terminer cette classe ? L\'enregistrement vocal et la synchronisation en direct s\'arrêteront.</string>
+    <string name="no_slides_draw">Aucune diapositive — dessinez sur un tableau blanc</string>
+    <string name="end">Fin</string>
+    <string name="live_now">EN DIRECT</string>
+    <string name="ready_to_go_live">Prêt</string>
+    <string name="voice_on">Voix activée</string>
+    <string name="voice_off">Voix désactivée</string>
+    <string name="reconnecting">Reconnexion…</string>
+    <string name="current_slide_label">Diapositive actuelle</string>
+    <string name="live_mode_label">Mode</string>
+    <string name="live_stage_hint">C\'est la diapositive que les élèves doivent suivre maintenant.</string>
+    <string name="live_drawing_hint">Dessinez directement sur la diapositive pendant l\'enseignement.</string>
+    <string name="live_controls_hint">Utilisez ces contrôles pendant l\'enseignement en direct.</string>
+    <string name="previous_slide">Diapositive précédente</string>
+    <string name="next_slide">Diapositive suivante</string>
+    <string name="turn_voice_on">Activer la voix</string>
+    <string name="turn_voice_off">Désactiver la voix</string>
+
+    <!-- Slide Editor -->
+    <string name="slide_editor">Éditeur de diapositives</string>
+    <string name="add_text">Ajouter du texte</string>
+    <string name="type_here">Tapez ici</string>
+    <string name="slide_saved">Diapositive enregistrée !</string>
+    <string name="slide_saved_locally">Enregistré localement — sera envoyé en ligne</string>
+    <string name="editing_status">Édition</string>
+    <string name="recording_status">Enregistrement</string>
+    <string name="saving_status">Sauvegarde</string>
+    <string name="photo_slide_source">Photo</string>
+    <string name="pdf_slide_source">Page PDF</string>
+    <string name="blank_slide_source">Diapositive vierge</string>
+    <string name="pen_tool">Stylo</string>
+    <string name="highlighter_tool">Surligneur</string>
+    <string name="eraser_tool">Gomme</string>
+    <string name="rectangle_tool">Rectangle</string>
+    <string name="circle_tool">Cercle</string>
+    <string name="line_tool">Ligne</string>
+    <string name="arrow_tool">Flèche</string>
+    <string name="laser_tool">Pointeur laser</string>
+    <string name="text_tool">Texte</string>
+    <string name="leave_editor_title">Quitter l\'éditeur ?</string>
+    <string name="leave_editor_message">Vous avez des modifications non enregistrées. Si vous quittez maintenant, cette diapositive ne sera pas sauvegardée.</string>
+    <string name="leave_without_saving">Quitter sans enregistrer</string>
+    <string name="clear_canvas">Effacer le tableau</string>
+    <string name="clear_canvas_confirm">Supprimer tous les dessins de cette diapositive ?</string>
+    <string name="start_recording">Démarrer l\'enregistrement</string>
+    <string name="stop_recording">Arrêter l\'enregistrement</string>
+    <string name="unsaved_changes">Modifications non enregistrées</string>
+    <string name="ready_to_save">Prêt à enregistrer</string>
+    <string name="current_tool_label">Outil actuel : %1$s</string>
+    <string name="stroke_width_label">Épaisseur du trait : %1$d</string>
+    <string name="editor_toolbar_hint">Choisissez un outil ci-dessous, puis dessinez sur la diapositive.</string>
+    <string name="draw_on_slide_hint">Dessinez, effacez ou ajoutez du texte sur cette diapositive.</string>
+    <string name="blank_board_hint">Utilisez ce tableau blanc comme un tableau de classe propre.</string>
+
+    <!-- PDF -->
+    <string name="open_pdf_file">Ouvrir un fichier PDF</string>
+    <string name="page_x_of_y">Page %1$d sur %2$d</string>
+    <string name="draw_on_page">Dessiner sur la page</string>
+    <string name="pdf_import_title">Importer depuis un PDF</string>
+    <string name="pdf_import_hint">Choisissez une page à la fois, puis enregistrez-la directement ou dessinez dessus d\'abord.</string>
+    <string name="open_pdf_title">Ouvrir un fichier PDF</string>
+    <string name="open_pdf_hint">Sélectionnez un livre ou un fichier de notes PDF pour transformer une page en diapositive.</string>
+    <string name="pdf_page_preview_title">Aperçu de la page</string>
+    <string name="pdf_page_preview_hint">Vérifiez que la page est lisible avant de l\'ajouter à la leçon.</string>
+    <string name="choose_page_title">Choisir une page</string>
+    <string name="choose_page_hint">Avancez page par page jusqu\'à celle que vous souhaitez utiliser.</string>
+    <string name="previous_page">Précédent</string>
+    <string name="next_page">Suivant</string>
+    <string name="use_this_page">Utiliser cette page</string>
+    <string name="draw_on_this_page">Dessiner sur cette page</string>
+    <string name="saving_page">Enregistrement de la page…</string>
+    <string name="saving_page_hint">Veuillez patienter pendant la préparation et l\'envoi de cette page.</string>
+
+    <!-- PDF Crop -->
+    <string name="crop_page_title">Sélectionner une zone</string>
+    <string name="crop_page_hint">Faites glisser sur la page pour sélectionner la partie à utiliser comme diapositive. Vous pouvez aussi utiliser la page entière.</string>
+    <string name="crop_drag_hint">Faites glisser votre doigt sur la page pour sélectionner une zone</string>
+    <string name="crop_and_save">Recadrer et enregistrer</string>
+    <string name="use_full_page">Page entière</string>
+    <string name="reset_selection">Réinitialiser la sélection</string>
+
+    <!-- Lessons (Talks) -->
+    <string name="add_lesson">Ajouter une leçon</string>
+    <string name="new_lesson">Nouvelle leçon</string>
+    <string name="lesson_title">Titre de la leçon</string>
+    <string name="lesson_title_hint">ex. Chapitre 3 — Fractions</string>
+    <string name="no_lessons_yet">Aucune leçon pour le moment</string>
+    <string name="no_lessons_hint">Appuyez sur le bouton ci-dessous pour ajouter votre première leçon</string>
+
+    <!-- Session Detail -->
+    <string name="no_slides_yet">Aucune diapositive pour le moment</string>
+    <string name="no_slides_hint">Appuyez sur le bouton ci-dessous pour créer votre première diapositive</string>
+    <string name="lesson_workspace">Espace de travail</string>
+    <string name="lesson_workspace_hint">Créez d\'abord les diapositives, puis commencez l\'enseignement en direct quand vous êtes prêt.</string>
+    <string name="slide_creation_tools">Outils de création</string>
+    <string name="slide_creation_tools_hint">Choisissez la façon la plus simple de préparer votre prochaine diapositive.</string>
+    <string name="live_teaching">Enseignement en direct</string>
+    <string name="live_teaching_hint">Utilisez ceci quand vos diapositives sont prêtes.</string>
+    <string name="slide_library">Bibliothèque de diapositives</string>
+    <string name="tap_slide_to_open">Appuyez sur une diapositive pour l\'ouvrir en plein écran.</string>
+    <string name="lesson_problem_loading">Impossible de charger cette leçon pour le moment.</string>
+    <string name="create_first_slide">Créer la première diapositive</string>
+    <string name="blank_whiteboard_slide">Commencer avec un tableau blanc vierge</string>
+    <string name="slide_maker_title">Texte et formes</string>
+    <string name="slide_maker_subtitle">Construire une diapositive avec du texte et des formes</string>
+    <string name="camera_slide_subtitle">Photographiez une page manuscrite ou une note</string>
+    <string name="pdf_slide_subtitle">Choisissez une page d\'un fichier PDF</string>
+    <string name="open_live_class">Ouvrir le mode enseignement en direct</string>
+    <string name="take_photo_subtitle">Prenez une photo d\'une page de livre</string>
+    <string name="blank_canvas_subtitle">Dessinez sur un tableau blanc vierge</string>
+    <string name="from_pdf_subtitle">Sélectionnez une page d\'un fichier PDF</string>
+    <string name="x_slides">%1$d diapositives</string>
+    <string name="x_viewers">%1$d spectateurs</string>
+
+    <!-- Language -->
+    <string name="choose_language">Choisir la langue</string>
+    <string name="language_english">English</string>
+    <string name="language_bangla">বাংলা</string>
+    <string name="language_french">Français</string>
+
+    <!-- Slide Management -->
+    <string name="replace_slide">Remplacer la diapositive</string>
+    <string name="replace_with_photo">Remplacer par une photo</string>
+    <string name="replace_with_canvas">Remplacer par un dessin</string>
+    <string name="replace_with_pdf">Remplacer depuis un PDF</string>
+    <string name="move_up">Monter</string>
+    <string name="move_down">Descendre</string>
+
+    <!-- Delete / Rename -->
+    <string name="delete">Supprimer</string>
+    <string name="delete_class">Supprimer la classe</string>
+    <string name="delete_class_confirm">Voulez-vous vraiment supprimer cette classe ? Toutes les leçons et diapositives seront définitivement supprimées.</string>
+    <string name="rename_lesson">Renommer la leçon</string>
+    <string name="delete_lesson">Supprimer la leçon</string>
+    <string name="delete_lesson_confirm">Voulez-vous vraiment supprimer \"%1$s\" ? Toutes les diapositives de cette leçon seront supprimées.</string>
+    <string name="delete_slide">Supprimer la diapositive</string>
+    <string name="delete_slide_confirm">Voulez-vous vraiment supprimer la diapositive %1$d ?</string>
+
+    <!-- Common -->
+    <string name="ok">OK</string>
+    <string name="cancel">Annuler</string>
+    <string name="retry">Réessayer</string>
+    <string name="loading">Chargement…</string>
+    <string name="error_network">Pas de connexion internet</string>
+    <string name="error_generic">Une erreur est survenue</string>
+    <string name="more_actions">Plus d\'actions</string>
+
+    <!-- ErrorClassifier messages -->
+    <string name="error_no_internet">Pas de connexion internet. Vérifiez votre réseau.</string>
+    <string name="error_timeout">Connexion expirée. Réessayez.</string>
+    <string name="error_connection_problem">Problème de connexion. Réessayez plus tard.</string>
+    <string name="error_auth_expired">Session expirée. Veuillez vous reconnecter.</string>
+    <string name="error_not_found">Contenu introuvable.</string>
+    <string name="error_file_too_large">Le fichier est trop volumineux.</string>
+    <string name="error_server">Erreur serveur. Réessayez plus tard.</string>
+    <string name="error_unknown">Une erreur est survenue. Réessayez.</string>
+    <string name="error_pdf_open">Impossible d\'ouvrir le fichier PDF.</string>
+    <string name="error_voice_start">Impossible de démarrer l\'enregistrement vocal.</string>
+    <string name="error_empty_class_name">Veuillez entrer un nom de classe.</string>
+    <string name="error_phone_incomplete">Le numéro de téléphone semble incomplet.</string>
+    <string name="error_pin_length">Le PIN doit contenir 4 chiffres.</string>
+    <string name="error_pin_mismatch">Les PIN ne correspondent pas.</string>
+    <string name="error_wrong_pin">PIN incorrect.</string>
+
+    <!-- Offline -->
+    <string name="offline_banner">Vous êtes hors ligne — affichage des données sauvegardées</string>
+    <string name="offline_action_unavailable">Cette action nécessite une connexion internet</string>
+
+    <!-- Upload Queue -->
+    <string name="pending_uploads">%1$d diapositives en attente d\'envoi</string>
+    <string name="pending_upload_single">1 diapositive en attente d\'envoi</string>
+    <string name="upload_complete">Diapositive envoyée avec succès</string>
+    <string name="from_gallery">Depuis la galerie</string>
+    <string name="gallery_slide_subtitle">Choisissez des photos de votre téléphone</string>
+    <string name="uploading_gallery_progress">Envoi %1$d sur %2$d…</string>
+    <string name="share_class_invite">Rejoignez ma classe \"%1$s\" sur OStudi !\nCode de classe : %2$s</string>
+    <string name="share_class">Partager la classe</string>
+    <string name="duplicate_lesson">Dupliquer la leçon</string>
+    <string name="duplicating_lesson">Duplication…</string>
+    <string name="lesson_duplicated">Leçon dupliquée</string>
+    <string name="settings">Paramètres</string>
+    <string name="logout">Déconnexion</string>
+    <string name="logout_confirm">Voulez-vous vraiment vous déconnecter ? Vous devrez entrer à nouveau votre numéro et votre PIN.</string>
+    <string name="clear_cache">Vider le cache d\'images</string>
+    <string name="cache_cleared">Cache d\'images vidé</string>
+    <string name="app_version">Version de l\'application</string>
+    <string name="account_section">Compte</string>
+    <string name="storage_section">Stockage</string>
+    <string name="about_section">À propos</string>
+
+    <!-- Attendance -->
+    <string name="students">Élèves</string>
+    <string name="attendance">Présence</string>
+    <string name="attendance_section">Présence</string>
+    <string name="attendance_section_hint">Gérez votre liste d\'élèves et prenez la présence quotidienne.</string>
+    <string name="roll_call">Appel</string>
+    <string name="add_student">Ajouter un élève</string>
+    <string name="edit_student">Modifier l\'élève</string>
+    <string name="delete_student">Supprimer l\'élève</string>
+    <string name="delete_student_confirm">Voulez-vous vraiment retirer %1$s de cette classe ?</string>
+    <string name="student_name">Nom de l\'élève</string>
+    <string name="student_name_hint">ex. Jean Dupont</string>
+    <string name="roll_number">Numéro</string>
+    <string name="roll_number_hint">Facultatif</string>
+    <string name="roll_number_label">N° : %1$d</string>
+    <string name="student_count">%1$d élèves</string>
+    <string name="no_students_yet">Aucun élève pour le moment</string>
+    <string name="no_students_hint">Appuyez sur + pour ajouter des élèves à cette classe.</string>
+    <string name="attendance_date">Date</string>
+    <string name="change_date">Modifier</string>
+    <string name="present">Présent</string>
+    <string name="absent">Absent</string>
+    <string name="present_count">%1$d / %2$d présents</string>
+    <string name="all_present">Tous</string>
+    <string name="all_absent">Aucun</string>
+    <string name="save_attendance">Enregistrer la présence</string>
+    <string name="attendance_saved">Présence enregistrée !</string>
+    <string name="no_students_for_attendance">Aucun élève dans cette classe</string>
+    <string name="add_students_first">Ajoutez d\'abord des élèves depuis l\'écran Élèves.</string>
+    <string name="attendance_history">Historique</string>
+    <string name="no_attendance_history">Aucun enregistrement de présence</string>
+    <string name="no_attendance_history_hint">Prenez la présence avec l\'Appel pour commencer le suivi.</string>
+    <string name="student_attendance_summary">Résumé des élèves</string>
+    <string name="total_class_days">%1$d jours de classe enregistrés</string>
+    <string name="total_students_enrolled">%1$d élèves inscrits</string>
+    <string name="present_out_of">Présent %1$d sur %2$d jours</string>
+    <string name="add_many_students">Ajout multiple</string>
+    <string name="bulk_add_hint">Tapez un nom d\'élève par ligne. Les numéros seront attribués automatiquement.</string>
+    <string name="bulk_add_placeholder">Jean\nMarie\nPierre\nSophie</string>
+    <string name="bulk_add_count">%1$d noms trouvés</string>
+    <string name="bulk_students_added">élèves ajoutés</string>
+    <string name="export_attendance">Exporter</string>
+    <string name="daily_records">Registre quotidien</string>
+    <string name="student_deleted">supprimé</string>
+    <string name="undo">Annuler</string>
+    <string name="data_section">Données</string>
+    <string name="export_backup">Exporter la sauvegarde</string>
+    <string name="import_backup">Restaurer la sauvegarde</string>
+    <string name="backup_exported">Fichier de sauvegarde prêt à partager</string>
+    <string name="backup_restored">Données restaurées avec succès !</string>
+    <string name="share_report">Partager le rapport</string>
+
+    <!-- Sync -->
+    <string name="pending_changes">%d modifications en attente de synchronisation</string>
+    <string name="syncing">Synchronisation…</string>
+
+    <!-- Theme -->
+    <string name="appearance_section">Apparence</string>
+    <string name="dark_mode">Mode sombre</string>
+    <string name="theme_system">Suivre le système</string>
+    <string name="theme_light">Clair</string>
+    <string name="theme_dark">Sombre</string>
+
+    <!-- Notes -->
+    <string name="notes">Notes</string>
+    <string name="class_notes">Notes de classe</string>
+    <string name="add_note">Ajouter une note</string>
+    <string name="edit_note">Modifier la note</string>
+    <string name="note_hint">Écrire une note…</string>
+    <string name="note_deleted">Note supprimée</string>
+    <string name="no_notes_yet">Aucune note</string>
+    <string name="no_notes_hint">Appuyez sur + pour ajouter votre première note</string>
+
+    <!-- Auto-backup -->
+    <string name="auto_backup">Sauvegarde automatique</string>
+    <string name="auto_backup_hint">Sauvegarde quotidienne en local</string>
+    <string name="last_auto_backup">Dernière sauvegarde auto : %s</string>
+    <string name="auto_backup_never">Jamais</string>
+    <string name="record_narration">Enregistrer la narration (diapo par diapo)</string>
+</resources>

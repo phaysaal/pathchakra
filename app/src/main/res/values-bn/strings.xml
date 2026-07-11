@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">পাঠচক্র</string>
+    <string name="app_name">ওস্তাদি</string>
 
     <!-- Auth -->
     <string name="enter_phone_subtitle">শুরু করতে আপনার ফোন নম্বর দিন</string>
@@ -13,12 +13,33 @@
     <string name="confirm_pin">পিন নিশ্চিত করুন</string>
     <string name="enter_pin_to_unlock">চালু করতে পিন দিন</string>
     <string name="start">শুরু করুন</string>
+    <string name="phone_step_title">ফোন নম্বর দিন</string>
+    <string name="phone_step_subtitle">আপনার শিক্ষক ফোন নম্বর ব্যবহার করুন, যাতে এই ডিভাইস আপনার ক্লাসের সাথে যুক্ত থাকে।</string>
+    <string name="pin_setup_step_title">৪ সংখ্যার পিন তৈরি করুন</string>
+    <string name="pin_setup_step_subtitle">সহজে মনে রাখা যায় এমন একটি পিন দিন। অ্যাপ খুললেই এই পিন লাগবে।</string>
+    <string name="pin_lock_step_title">ওস্তাদি খুলুন</string>
+    <string name="pin_lock_step_subtitle">আপনার ক্লাস ও পাঠ খুলতে পিন দিন।</string>
+    <string name="phone_number_hint">যেমন: 017XXXXXXXX</string>
+    <string name="name_hint">এতে আপনার অ্যাকাউন্ট চিনতে সুবিধা হবে। চাইলে ফাঁকা রাখতে পারেন।</string>
+    <string name="pin_hint">ঠিক ৪টি সংখ্যা দিন</string>
+    <string name="confirm_pin_hint">একই ৪টি সংখ্যা আবার দিন</string>
+    <string name="pin_lock_helper">এই ডিভাইসে যে পিন তৈরি করেছিলেন, সেটিই ব্যবহার করুন।</string>
+    <string name="unlock">খুলুন</string>
+    <string name="loading_account">আপনার শিক্ষক অ্যাকাউন্ট লোড হচ্ছে…</string>
+    <string name="setting_up_account">সেটআপ হচ্ছে…</string>
+    <string name="verifying_pin">যাচাই হচ্ছে…</string>
 
     <!-- Home -->
     <string name="my_classes">আমার ক্লাস</string>
     <string name="start_new_class">নতুন ক্লাস শুরু করুন</string>
     <string name="no_classes_yet">এখনো কোনো ক্লাস নেই</string>
     <string name="no_classes_hint">আপনার প্রথম ক্লাস শুরু করতে নিচের বাটনে চাপুন</string>
+    <string name="home_overview_title">শিক্ষকের ড্যাশবোর্ড</string>
+    <string name="home_overview_count">%1$dটি ক্লাস প্রস্তুত আছে</string>
+    <string name="home_overview_hint">ক্লাস খুলে পাঠ সাজান, ক্লাস কোড শেয়ার করুন, বা শেখানো শুরু করুন।</string>
+    <string name="create_class_cta">ক্লাস তৈরি করুন</string>
+    <string name="active_classes_title">চলমান ক্লাসসমূহ</string>
+    <string name="classes_problem_loading">আপনার ক্লাসগুলো লোড করা যাচ্ছে না</string>
 
     <!-- Session -->
     <string name="class_name">ক্লাসের নাম</string>
@@ -28,6 +49,16 @@
     <string name="share_code_hint">এই কোডটি আপনার ছাত্রদের দিন</string>
     <string name="rename_class">ক্লাসের নাম পরিবর্তন</string>
     <string name="scan_to_join">এই ক্লাসে যোগ দিতে স্ক্যান করুন</string>
+    <string name="show_qr_code">QR কোড দেখান</string>
+    <string name="share_with_students">ছাত্রদের সাথে শেয়ার করুন</string>
+    <string name="share_join_instruction">ছাত্ররা এই কোড বা QR কোড স্ক্যান করে যোগ দিতে পারবে।</string>
+    <string name="class_overview">ক্লাসের সারসংক্ষেপ</string>
+    <string name="class_overview_hint">ক্লাস কোড প্রস্তুত রাখুন, তারপর একে একে পাঠ তৈরি করুন।</string>
+    <string name="lessons_count">পাঠ</string>
+    <string name="lessons_section_title">পাঠসমূহ</string>
+    <string name="lessons_section_subtitle">এই ক্লাসের জন্য %1$dটি পাঠ প্রস্তুত আছে</string>
+    <string name="create_first_lesson">প্রথম পাঠ তৈরি করুন</string>
+    <string name="lesson_card_hint">স্লাইড ও শিক্ষার উপকরণ সাজাতে এই পাঠ খুলুন।</string>
     <string name="slides">স্লাইড</string>
     <string name="add_slide">স্লাইড যোগ করুন</string>
     <string name="go_live">লাইভ শুরু করুন</string>
@@ -40,23 +71,100 @@
     <string name="save_slide">স্লাইড সেভ করুন</string>
     <string name="discard">বাতিল</string>
     <string name="retake">আবার তুলুন</string>
+    <string name="use_photo">এই ছবি ব্যবহার করুন</string>
+    <string name="draw_on_photo">ছবির উপর আঁকুন</string>
+    <string name="review_photo_title">আপনার ছবি দেখে নিন</string>
+    <string name="review_photo_hint">স্লাইড হিসেবে সেভ করার আগে দেখুন পৃষ্ঠাটি পরিষ্কার ও সহজে পড়া যাচ্ছে কিনা।</string>
+    <string name="photo_preview_title">ছবির প্রিভিউ</string>
+    <string name="photo_preview_hint">লেখা অস্পষ্ট হলে আবার ছবি তুলুন বা অটো-এনহান্স চালু করুন।</string>
+    <string name="auto_enhance">অটো-এনহান্স</string>
+    <string name="auto_enhance_hint">লেখা আরও গাঢ় করে এবং পৃষ্ঠাকে ছাত্রদের জন্য পরিষ্কার দেখায়।</string>
+    <string name="uploading_photo">ছবি সেভ হচ্ছে…</string>
+    <string name="uploading_photo_hint">এই স্লাইড প্রস্তুত ও আপলোড হওয়া পর্যন্ত অপেক্ষা করুন।</string>
+    <string name="camera_permission_required">স্লাইডের ছবি তুলতে ক্যামেরার অনুমতি প্রয়োজন।</string>
 
     <!-- Live -->
     <string name="live_class">লাইভ ক্লাস</string>
     <string name="end_class_confirm">আপনি কি ক্লাস শেষ করতে চান? ভয়েস রেকর্ডিং ও লাইভ সিঙ্ক বন্ধ হবে।</string>
     <string name="no_slides_draw">কোনো স্লাইড নেই — ফাঁকা ক্যানভাসে আঁকুন</string>
     <string name="end">শেষ</string>
+    <string name="live_now">লাইভ</string>
+    <string name="ready_to_go_live">প্রস্তুত</string>
+    <string name="voice_on">ভয়েস চালু</string>
+    <string name="voice_off">ভয়েস বন্ধ</string>
+    <string name="reconnecting">পুনঃসংযোগ হচ্ছে…</string>
+    <string name="current_slide_label">বর্তমান স্লাইড</string>
+    <string name="live_mode_label">মোড</string>
+    <string name="live_stage_hint">ছাত্রদের এখন এই স্লাইডটি অনুসরণ করা উচিত।</string>
+    <string name="live_drawing_hint">শেখানোর সময় স্লাইডের উপর সরাসরি আঁকুন।</string>
+    <string name="live_controls_hint">লাইভ শেখানোর সময় এই নিয়ন্ত্রণগুলো ব্যবহার করুন।</string>
+    <string name="previous_slide">পূর্বের স্লাইড</string>
+    <string name="next_slide">পরের স্লাইড</string>
+    <string name="turn_voice_on">ভয়েস চালু করুন</string>
+    <string name="turn_voice_off">ভয়েস বন্ধ করুন</string>
 
     <!-- Slide Editor -->
     <string name="slide_editor">স্লাইড এডিটর</string>
     <string name="add_text">লেখা যোগ করুন</string>
     <string name="type_here">এখানে লিখুন</string>
     <string name="slide_saved">স্লাইড সেভ হয়েছে!</string>
+    <string name="slide_saved_locally">ফোনে সেভ হয়েছে — ইন্টারনেট এলে আপলোড হবে</string>
+    <string name="editing_status">এডিট করা হচ্ছে</string>
+    <string name="recording_status">রেকর্ড হচ্ছে</string>
+    <string name="saving_status">সেভ হচ্ছে</string>
+    <string name="photo_slide_source">ছবির স্লাইড</string>
+    <string name="pdf_slide_source">PDF পৃষ্ঠা</string>
+    <string name="blank_slide_source">ফাঁকা স্লাইড</string>
+    <string name="pen_tool">কলম</string>
+    <string name="highlighter_tool">হাইলাইটার</string>
+    <string name="eraser_tool">ইরেজার</string>
+    <string name="rectangle_tool">আয়তক্ষেত্র</string>
+    <string name="circle_tool">বৃত্ত</string>
+    <string name="line_tool">রেখা</string>
+    <string name="arrow_tool">তীর</string>
+    <string name="laser_tool">লেজার পয়েন্টার</string>
+    <string name="text_tool">লেখা</string>
+    <string name="leave_editor_title">এডিটর থেকে বের হবেন?</string>
+    <string name="leave_editor_message">আপনার অসেভ করা পরিবর্তন আছে। এখন বের হলে এই স্লাইড সেভ হবে না।</string>
+    <string name="leave_without_saving">সেভ না করে বের হন</string>
+    <string name="clear_canvas">ক্যানভাস পরিষ্কার করুন</string>
+    <string name="clear_canvas_confirm">এই স্লাইডের সব আঁকা মুছে ফেলবেন?</string>
+    <string name="start_recording">রেকর্ড শুরু করুন</string>
+    <string name="stop_recording">রেকর্ড বন্ধ করুন</string>
+    <string name="unsaved_changes">অসেভ করা পরিবর্তন</string>
+    <string name="ready_to_save">সেভ করার জন্য প্রস্তুত</string>
+    <string name="current_tool_label">বর্তমান টুল: %1$s</string>
+    <string name="stroke_width_label">স্ট্রোকের প্রস্থ: %1$d</string>
+    <string name="editor_toolbar_hint">নিচ থেকে একটি টুল বেছে নিন, তারপর স্লাইডের উপর আঁকুন।</string>
+    <string name="draw_on_slide_hint">এই শিক্ষার স্লাইডে আঁকুন, মুছুন, বা লেখা যোগ করুন।</string>
+    <string name="blank_board_hint">এই ফাঁকা বোর্ডটি পরিষ্কার শ্রেণিকক্ষের হোয়াইটবোর্ডের মতো ব্যবহার করুন।</string>
 
     <!-- PDF -->
     <string name="open_pdf_file">PDF ফাইল খুলুন</string>
     <string name="page_x_of_y">পৃষ্ঠা %1$d / %2$d</string>
     <string name="draw_on_page">পৃষ্ঠায় আঁকুন</string>
+    <string name="pdf_import_title">PDF থেকে আনুন</string>
+    <string name="pdf_import_hint">একবারে একটি পৃষ্ঠা বেছে নিন, তারপর সরাসরি সেভ করুন বা আগে তার উপর আঁকুন।</string>
+    <string name="open_pdf_title">একটি PDF ফাইল খুলুন</string>
+    <string name="open_pdf_hint">একটি PDF বই বা নোট ফাইল বেছে নিন, তারপর একটি পৃষ্ঠা স্লাইডে পরিণত করুন।</string>
+    <string name="pdf_page_preview_title">পৃষ্ঠার প্রিভিউ</string>
+    <string name="pdf_page_preview_hint">পাঠে যোগ করার আগে দেখুন পৃষ্ঠাটি পড়া যাচ্ছে কিনা।</string>
+    <string name="choose_page_title">পৃষ্ঠা বেছে নিন</string>
+    <string name="choose_page_hint">যে পৃষ্ঠা ব্যবহার করতে চান সেখানে পৌঁছানো পর্যন্ত এক পৃষ্ঠা করে এগোন।</string>
+    <string name="previous_page">পূর্বের</string>
+    <string name="next_page">পরের</string>
+    <string name="use_this_page">এই পৃষ্ঠা ব্যবহার করুন</string>
+    <string name="draw_on_this_page">এই পৃষ্ঠায় আঁকুন</string>
+    <string name="saving_page">পৃষ্ঠা সেভ হচ্ছে…</string>
+    <string name="saving_page_hint">এই পৃষ্ঠা প্রস্তুত ও আপলোড হওয়া পর্যন্ত অপেক্ষা করুন।</string>
+
+    <!-- PDF Crop -->
+    <string name="crop_page_title">অংশ নির্বাচন করুন</string>
+    <string name="crop_page_hint">স্লাইডে ব্যবহার করতে চান এমন অংশ আঙুল দিয়ে টেনে নির্বাচন করুন। পুরো পৃষ্ঠাও ব্যবহার করতে পারেন।</string>
+    <string name="crop_drag_hint">একটি অংশ নির্বাচন করতে পৃষ্ঠায় আঙুল টানুন</string>
+    <string name="crop_and_save">কেটে সেভ করুন</string>
+    <string name="use_full_page">পুরো পৃষ্ঠা</string>
+    <string name="reset_selection">নির্বাচন মুছুন</string>
 
     <!-- Lessons (Talks) -->
     <string name="add_lesson">পাঠ যোগ করুন</string>
@@ -69,6 +177,22 @@
     <!-- Session Detail -->
     <string name="no_slides_yet">এখনো কোনো স্লাইড নেই</string>
     <string name="no_slides_hint">প্রথম স্লাইড তৈরি করতে নিচের বাটনে চাপুন</string>
+    <string name="lesson_workspace">পাঠের কাজের জায়গা</string>
+    <string name="lesson_workspace_hint">আগে স্লাইড তৈরি করুন, তারপর প্রস্তুত হলে লাইভ ক্লাস শুরু করুন।</string>
+    <string name="slide_creation_tools">স্লাইড তৈরির উপায়</string>
+    <string name="slide_creation_tools_hint">আপনার পরের শিক্ষার স্লাইড বানাতে সহজ পদ্ধতি বেছে নিন।</string>
+    <string name="live_teaching">লাইভ শেখানো</string>
+    <string name="live_teaching_hint">পাঠের স্লাইড প্রস্তুত হলে এটি ব্যবহার করুন।</string>
+    <string name="slide_library">স্লাইড তালিকা</string>
+    <string name="tap_slide_to_open">যেকোনো স্লাইডে চাপ দিলে বড় করে দেখা যাবে।</string>
+    <string name="lesson_problem_loading">এই পাঠটি এখন লোড করা যাচ্ছে না।</string>
+    <string name="create_first_slide">প্রথম স্লাইড তৈরি করুন</string>
+    <string name="blank_whiteboard_slide">ফাঁকা হোয়াইটবোর্ডের মতো স্লাইড শুরু করুন</string>
+    <string name="slide_maker_title">টেক্সট ও আকৃতি</string>
+    <string name="slide_maker_subtitle">টেক্সট বক্স ও আকৃতি দিয়ে স্লাইড তৈরি করুন</string>
+    <string name="camera_slide_subtitle">হাতে লেখা পৃষ্ঠা বা নোটের ছবি তুলুন</string>
+    <string name="pdf_slide_subtitle">PDF ফাইল থেকে একটি পৃষ্ঠা নিন</string>
+    <string name="open_live_class">লাইভ ক্লাস চালু করুন</string>
     <string name="take_photo_subtitle">বইয়ের পৃষ্ঠার ছবি তুলুন</string>
     <string name="blank_canvas_subtitle">ফাঁকা সাদা ক্যানভাসে আঁকুন</string>
     <string name="from_pdf_subtitle">PDF ফাইল থেকে পৃষ্ঠা নির্বাচন করুন</string>
@@ -79,6 +203,14 @@
     <string name="choose_language">ভাষা নির্বাচন করুন</string>
     <string name="language_english">English</string>
     <string name="language_bangla">বাংলা</string>
+
+    <!-- Slide Management -->
+    <string name="replace_slide">স্লাইড বদলান</string>
+    <string name="replace_with_photo">ছবি দিয়ে বদলান</string>
+    <string name="replace_with_canvas">আঁকা দিয়ে বদলান</string>
+    <string name="replace_with_pdf">পিডিএফ থেকে বদলান</string>
+    <string name="move_up">উপরে সরান</string>
+    <string name="move_down">নিচে সরান</string>
 
     <!-- Delete / Rename -->
     <string name="delete">মুছুন</string>
@@ -97,4 +229,128 @@
     <string name="loading">লোড হচ্ছে…</string>
     <string name="error_network">ইন্টারনেট সংযোগ নেই</string>
     <string name="error_generic">কিছু একটা সমস্যা হয়েছে</string>
+    <string name="more_actions">আরও কাজ</string>
+
+    <!-- ErrorClassifier messages -->
+    <string name="error_no_internet">ইন্টারনেট সংযোগ নেই। নেটওয়ার্ক দেখুন।</string>
+    <string name="error_timeout">সংযোগ সময় শেষ। আবার চেষ্টা করুন।</string>
+    <string name="error_connection_problem">সংযোগ সমস্যা। কিছুক্ষণ পরে আবার চেষ্টা করুন।</string>
+    <string name="error_auth_expired">সেশন শেষ হয়ে গেছে। আবার লগইন করুন।</string>
+    <string name="error_not_found">কন্টেন্ট পাওয়া যায়নি।</string>
+    <string name="error_file_too_large">ফাইল অনেক বড়। আপলোড করা যাচ্ছে না।</string>
+    <string name="error_server">সার্ভারে সমস্যা। কিছুক্ষণ পরে আবার চেষ্টা করুন।</string>
+    <string name="error_unknown">কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।</string>
+    <string name="error_pdf_open">পিডিএফ ফাইল খোলা যাচ্ছে না।</string>
+    <string name="error_voice_start">ভয়েস রেকর্ডিং শুরু করা যাচ্ছে না।</string>
+    <string name="error_empty_class_name">ক্লাসের নাম দিন।</string>
+    <string name="error_phone_incomplete">ফোন নম্বর অসম্পূর্ণ।</string>
+    <string name="error_pin_length">পিন ৪ সংখ্যার হতে হবে।</string>
+    <string name="error_pin_mismatch">পিন মিলছে না।</string>
+    <string name="error_wrong_pin">ভুল পিন।</string>
+
+    <!-- Offline -->
+    <string name="offline_banner">আপনি অফলাইনে আছেন — সেভ করা তথ্য দেখাচ্ছে</string>
+    <string name="offline_action_unavailable">এই কাজের জন্য ইন্টারনেট দরকার</string>
+
+    <!-- Upload Queue -->
+    <string name="pending_uploads">%1$dটি স্লাইড আপলোডের অপেক্ষায়</string>
+    <string name="pending_upload_single">১টি স্লাইড আপলোডের অপেক্ষায়</string>
+    <string name="upload_complete">স্লাইড আপলোড হয়েছে</string>
+    <string name="from_gallery">গ্যালারি থেকে</string>
+    <string name="gallery_slide_subtitle">ফোনে থাকা ছবি থেকে বেছে নিন</string>
+    <string name="uploading_gallery_progress">আপলোড হচ্ছে %1$d / %2$d…</string>
+    <string name="share_class_invite">আমার ক্লাস \"%1$s\" এ যোগ দিন ওস্তাদি অ্যাপে!\nক্লাস কোড: %2$s</string>
+    <string name="share_class">ক্লাস শেয়ার করুন</string>
+    <string name="duplicate_lesson">পাঠ কপি করুন</string>
+    <string name="duplicating_lesson">কপি হচ্ছে…</string>
+    <string name="lesson_duplicated">পাঠ কপি হয়েছে</string>
+    <string name="settings">সেটিংস</string>
+    <string name="logout">লগআউট</string>
+    <string name="logout_confirm">আপনি কি লগআউট করতে চান? আবার ফোন নম্বর ও পিন দিতে হবে।</string>
+    <string name="clear_cache">ছবির ক্যাশ মুছুন</string>
+    <string name="cache_cleared">ছবির ক্যাশ মুছে ফেলা হয়েছে</string>
+    <string name="app_version">অ্যাপ সংস্করণ</string>
+    <string name="account_section">অ্যাকাউন্ট</string>
+    <string name="storage_section">স্টোরেজ</string>
+    <string name="about_section">পরিচিতি</string>
+
+    <!-- Attendance -->
+    <string name="students">ছাত্র-ছাত্রী</string>
+    <string name="attendance">উপস্থিতি</string>
+    <string name="attendance_section">উপস্থিতি</string>
+    <string name="attendance_section_hint">ছাত্রের তালিকা সাজান এবং প্রতিদিন উপস্থিতি নিন।</string>
+    <string name="roll_call">হাজিরা</string>
+    <string name="add_student">ছাত্র যোগ করুন</string>
+    <string name="edit_student">ছাত্র সম্পাদনা</string>
+    <string name="delete_student">ছাত্র মুছুন</string>
+    <string name="delete_student_confirm">আপনি কি %1$s কে এই ক্লাস থেকে মুছতে চান?</string>
+    <string name="student_name">ছাত্রের নাম</string>
+    <string name="student_name_hint">যেমন: রহিম উদ্দিন</string>
+    <string name="roll_number">রোল নম্বর</string>
+    <string name="roll_number_hint">ঐচ্ছিক</string>
+    <string name="roll_number_label">রোল: %1$d</string>
+    <string name="student_count">%1$d জন ছাত্র</string>
+    <string name="no_students_yet">এখনো কোনো ছাত্র নেই</string>
+    <string name="no_students_hint">এই ক্লাসে ছাত্র যোগ করতে + বাটনে চাপুন।</string>
+    <string name="attendance_date">তারিখ</string>
+    <string name="change_date">পরিবর্তন</string>
+    <string name="present">উপস্থিত</string>
+    <string name="absent">অনুপস্থিত</string>
+    <string name="present_count">%1$d / %2$d উপস্থিত</string>
+    <string name="all_present">সবাই</string>
+    <string name="all_absent">কেউ না</string>
+    <string name="save_attendance">উপস্থিতি সেভ করুন</string>
+    <string name="attendance_saved">উপস্থিতি সেভ হয়েছে!</string>
+    <string name="no_students_for_attendance">এই ক্লাসে কোনো ছাত্র নেই</string>
+    <string name="add_students_first">আগে ছাত্র-ছাত্রী স্ক্রিন থেকে ছাত্র যোগ করুন।</string>
+    <string name="attendance_history">ইতিহাস</string>
+    <string name="no_attendance_history">এখনো কোনো উপস্থিতি রেকর্ড নেই</string>
+    <string name="no_attendance_history_hint">হাজিরা থেকে উপস্থিতি নিলে এখানে দেখা যাবে।</string>
+    <string name="student_attendance_summary">ছাত্রদের সারসংক্ষেপ</string>
+    <string name="total_class_days">%1$d দিন ক্লাস হয়েছে</string>
+    <string name="total_students_enrolled">%1$d জন ছাত্র তালিকাভুক্ত</string>
+    <string name="present_out_of">%1$d / %2$d দিন উপস্থিত</string>
+    <string name="add_many_students">অনেকগুলো যোগ</string>
+    <string name="bulk_add_hint">প্রতি লাইনে একজন ছাত্রের নাম লিখুন। রোল নম্বর স্বয়ংক্রিয়ভাবে দেওয়া হবে।</string>
+    <string name="bulk_add_placeholder">রহিম\nকরিম\nফাতেমা\nআয়েশা</string>
+    <string name="bulk_add_count">%1$d জন পাওয়া গেছে</string>
+    <string name="bulk_students_added">জন ছাত্র যোগ হয়েছে</string>
+    <string name="export_attendance">রপ্তানি</string>
+    <string name="daily_records">দিনভিত্তিক রেকর্ড</string>
+    <string name="student_deleted">মুছে ফেলা হয়েছে</string>
+    <string name="undo">ফেরত আনুন</string>
+    <string name="data_section">তথ্য</string>
+    <string name="export_backup">ব্যাকআপ রপ্তানি</string>
+    <string name="import_backup">ব্যাকআপ পুনরুদ্ধার</string>
+    <string name="backup_exported">ব্যাকআপ ফাইল শেয়ার করতে প্রস্তুত</string>
+    <string name="backup_restored">তথ্য সফলভাবে পুনরুদ্ধার হয়েছে!</string>
+    <string name="share_report">রিপোর্ট শেয়ার করুন</string>
+
+    <!-- Sync -->
+    <string name="pending_changes">%d টি পরিবর্তন সিঙ্ক হয়নি</string>
+    <string name="syncing">সিঙ্ক হচ্ছে…</string>
+
+    <!-- Theme -->
+    <string name="appearance_section">চেহারা</string>
+    <string name="dark_mode">ডার্ক মোড</string>
+    <string name="theme_system">সিস্টেম অনুসরণ</string>
+    <string name="theme_light">লাইট</string>
+    <string name="theme_dark">ডার্ক</string>
+
+    <!-- Notes -->
+    <string name="notes">নোট</string>
+    <string name="class_notes">ক্লাসের নোট</string>
+    <string name="add_note">নোট যোগ করুন</string>
+    <string name="edit_note">নোট সম্পাদনা</string>
+    <string name="note_hint">নোট লিখুন…</string>
+    <string name="note_deleted">নোট মুছে ফেলা হয়েছে</string>
+    <string name="no_notes_yet">কোনো নোট নেই</string>
+    <string name="no_notes_hint">এই ক্লাসের প্রথম নোট যোগ করতে + চাপুন</string>
+
+    <!-- Auto-backup -->
+    <string name="auto_backup">স্বয়ংক্রিয় ব্যাকআপ</string>
+    <string name="auto_backup_hint">প্রতিদিন স্থানীয় স্টোরেজে ব্যাকআপ</string>
+    <string name="last_auto_backup">সর্বশেষ স্বয়ংক্রিয় ব্যাকআপ: %s</string>
+    <string name="auto_backup_never">কখনো হয়নি</string>
+    <string name="record_narration">স্লাইড ধরে ধরে লেকচার রেকর্ড করুন</string>
 </resources>

@@ -3,9 +3,12 @@ package com.seenslide.teacher.core.network.api
 import com.seenslide.teacher.core.network.model.ChunkUploadResponse
 import com.seenslide.teacher.core.network.model.StartRecordingResponse
 import com.seenslide.teacher.core.network.model.StopRecordingResponse
+import com.seenslide.teacher.core.network.model.SyncMarkersRequest
 import okhttp3.MultipartBody
+import retrofit2.http.Body
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -15,8 +18,10 @@ interface VoiceApi {
     @POST("api/voice/desktop/start/{sessionId}")
     suspend fun startRecording(
         @Path("sessionId") sessionId: String,
-        @Query("audio_format") audioFormat: String = "ogg",
+        @Query("audio_format") audioFormat: String = "aac",
         @Query("talk_id") talkId: String? = null,
+        @Query("sample_rate") sampleRate: Int? = null,
+        @Query("channels") channels: Int = 1,
     ): StartRecordingResponse
 
     @Multipart
@@ -24,6 +29,9 @@ interface VoiceApi {
     suspend fun uploadChunk(
         @Path("recordingId") recordingId: String,
         @Part file: MultipartBody.Part,
+        // Fixes the chunk's position in the audio timeline — retries can't
+        // scramble merge order, and re-upload of the same index is idempotent
+        @Query("chunk_index") chunkIndex: Int? = null,
     ): ChunkUploadResponse
 
     @POST("api/voice/desktop/marker/{recordingId}")
@@ -31,6 +39,13 @@ interface VoiceApi {
         @Path("recordingId") recordingId: String,
         @Query("slide_number") slideNumber: Int,
         @Query("timestamp_seconds") timestampSeconds: Double,
+    ): Map<String, Any>
+
+    /** Replace all auto markers with the authoritative local list. */
+    @PUT("api/voice/desktop/markers/{recordingId}")
+    suspend fun syncMarkers(
+        @Path("recordingId") recordingId: String,
+        @Body body: SyncMarkersRequest,
     ): Map<String, Any>
 
     @Multipart
