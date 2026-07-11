@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ওস্তাদি</string>
+    <string name="app_name">ওস্তাদি শিক্ষক</string>
 
     <!-- Auth -->
     <string name="enter_phone_subtitle">শুরু করতে আপনার ফোন নম্বর দিন</string>
