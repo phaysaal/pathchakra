@@ -60,11 +60,17 @@ class StrokeRecorder {
 
     /**
      * Export all slide recordings as JSON array.
+     *
+     * @param rebaseOffsetMs Rebases every timestamp onto the AUDIO timeline:
+     *   t' = max(0, t - offset), where offset = (voice start wall ms) -
+     *   (stroke recording start wall ms). Strokes drawn before the voice
+     *   began clamp to t=0 (they're the baseline state at playback start).
+     *   With the default 0, legacy wall-relative timestamps pass through.
      */
-    fun toJson(): JSONArray {
+    fun toJson(rebaseOffsetMs: Long = 0L): JSONArray {
         val arr = JSONArray()
         for ((_, recording) in recordings) {
-            arr.put(recording.toJson())
+            arr.put(recording.toJson(rebaseOffsetMs))
         }
         return arr
     }
@@ -73,7 +79,7 @@ class StrokeRecorder {
      * Export a single slide recording as JSON.
      */
     fun getSlideRecordingJson(slideNumber: Int): JSONObject? {
-        return recordings[slideNumber]?.toJson()
+        return recordings[slideNumber]?.toJson(0L)
     }
 
     fun clear() {
@@ -89,21 +95,33 @@ private data class SlideRecording(
     val recordingStart: Long,
     val elements: MutableList<DrawElement> = mutableListOf(),
 ) {
-    fun toJson(): JSONObject {
+    fun toJson(rebaseOffsetMs: Long): JSONObject {
         val json = JSONObject()
         json.put("talk_id", talkId)
         json.put("slide_number", slideNumber)
-        json.put("recording_start", recordingStart / 1000.0)
+        // Rebased timelines are audio-relative — the wall-clock anchor is
+        // meaningless there (and its epoch-seconds unit historically broke
+        // the web replayer). Emit 0 in that case.
+        json.put("recording_start", if (rebaseOffsetMs > 0L) 0.0 else recordingStart / 1000.0)
 
         val strokesArr = JSONArray()
         for (element in elements) {
-            strokesArr.put(elementToJson(element))
+            strokesArr.put(StrokeWire.elementToJson(element, rebaseOffsetMs))
         }
         json.put("strokes", strokesArr)
         return json
     }
+}
 
-    private fun elementToJson(element: DrawElement): JSONObject {
+/**
+ * Serializes DrawElements to the wire/replay JSON shape. Shared by the
+ * live-class recorder and narration mode so both emit identical strokes.
+ */
+object StrokeWire {
+
+    private fun rebase(t: Long, offsetMs: Long): Long = (t - offsetMs).coerceAtLeast(0L)
+
+    fun elementToJson(element: DrawElement, rebaseOffsetMs: Long = 0L): JSONObject {
         return when (element) {
             is DrawElement.FreehandElement -> {
                 val s = element.stroke
@@ -112,15 +130,15 @@ private data class SlideRecording(
                     put("tool", s.tool.toWireString())
                     put("color", s.color.toHexColor())
                     put("width", s.width.toDouble())
-                    put("t_start", s.points.firstOrNull()?.t ?: 0L)
-                    put("t_end", s.points.lastOrNull()?.t ?: 0L)
+                    put("t_start", rebase(s.points.firstOrNull()?.t ?: 0L, rebaseOffsetMs))
+                    put("t_end", rebase(s.points.lastOrNull()?.t ?: 0L, rebaseOffsetMs))
                     put("points", JSONArray().apply {
                         for (p in s.points) {
                             put(JSONObject().apply {
                                 put("x", p.x.toDouble())
                                 put("y", p.y.toDouble())
                                 put("p", p.pressure.toDouble())
-                                put("t", p.t)
+                                put("t", rebase(p.t, rebaseOffsetMs))
                             })
                         }
                     })
@@ -133,8 +151,8 @@ private data class SlideRecording(
                     put("shape", s.tool.name.lowercase())
                     put("color", s.color.toHexColor())
                     put("width", s.width.toDouble())
-                    put("t_start", s.tStart)
-                    put("t_end", s.tEnd)
+                    put("t_start", rebase(s.tStart, rebaseOffsetMs))
+                    put("t_end", rebase(s.tEnd, rebaseOffsetMs))
                     put("start_x", s.startX.toDouble())
                     put("start_y", s.startY.toDouble())
                     put("end_x", s.endX.toDouble())
@@ -150,7 +168,7 @@ private data class SlideRecording(
                     put("font_size", t.fontSize.toDouble())
                     put("x", t.x.toDouble())
                     put("y", t.y.toDouble())
-                    put("t", t.tPlaced)
+                    put("t", rebase(t.tPlaced, rebaseOffsetMs))
                 }
             }
         }

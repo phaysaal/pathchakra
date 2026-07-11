@@ -210,14 +210,23 @@ class SlideEditorViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(isRecording = false)
 
         viewModelScope.launch {
+            val hadVoice = voiceStreamingService.isStreaming
             // Stop voice streaming
-            if (voiceStreamingService.isStreaming) {
+            if (hadVoice) {
                 voiceStreamingService.stop()
             }
 
-            // Save stroke recording locally
+            // Save stroke recording locally — rebased onto the audio
+            // timeline when voice ran (see LiveClassViewModel.endClass)
+            val rebaseMs = if (hadVoice &&
+                voiceStreamingService.voiceStartWallMs > 0L &&
+                strokeRecorder.recordingStartTime > 0L
+            ) {
+                (voiceStreamingService.voiceStartWallMs - strokeRecorder.recordingStartTime)
+                    .coerceAtLeast(0L)
+            } else 0L
             talkId?.let { tid ->
-                recordingStore.save(tid, strokeRecorder.toJson())
+                recordingStore.save(tid, strokeRecorder.toJson(rebaseMs))
             }
         }
     }

@@ -49,6 +49,18 @@ class VoiceStreamingService @Inject constructor(
     private var nextChunkIndex = 1
     private var scope: CoroutineScope? = null
 
+    /**
+     * Wall-clock instant audio capture began (epoch ms), 0 if never started.
+     * Survives stop() — stroke recordings rebase their timestamps onto the
+     * audio timeline at export using this anchor.
+     */
+    var voiceStartWallMs: Long = 0L
+        private set
+
+    /** Current position on the audio timeline in ms (0 when not streaming). */
+    val elapsedMs: Long
+        get() = if (audioRecorder.isRecording) (audioRecorder.elapsedSeconds * 1000).toLong() else 0L
+
     // Retry queue: chunks that failed to upload, ordered oldest-first
     private val pendingChunks = ArrayDeque<IndexedChunk>(MAX_PENDING_CHUNKS)
 
@@ -71,6 +83,7 @@ class VoiceStreamingService @Inject constructor(
                 Log.e(TAG, "Failed to start local audio capture")
                 return false
             }
+            voiceStartWallMs = System.currentTimeMillis()
 
             val response = voiceApi.startRecording(
                 sessionId = sessionId,

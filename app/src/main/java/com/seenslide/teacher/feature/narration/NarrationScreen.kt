@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
@@ -52,6 +53,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -178,6 +180,21 @@ fun NarrationScreen(
                         contentScale = ContentScale.Fit,
                     )
                 }
+                // Ink: live canvas while recording; timed replay otherwise
+                if (uiState.isRecording) {
+                    com.seenslide.teacher.core.drawing.DrawingCanvas(
+                        modifier = Modifier.fillMaxSize(),
+                        drawingState = viewModel.drawingState,
+                        recordingStartTime = viewModel.strokeStartWallMs,
+                        onStrokeCompleted = viewModel::onStrokeCompleted,
+                    )
+                } else if (uiState.inkStrokes.isNotEmpty()) {
+                    InkReplayOverlay(
+                        strokes = uiState.inkStrokes,
+                        positionMs = uiState.playbackPositionMs,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
                 if (narratedSec != null) {
                     Row(
                         modifier = Modifier
@@ -213,6 +230,26 @@ fun NarrationScreen(
                             color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold,
                         )
                     }
+                }
+            }
+
+            // Drawing tools while recording — annotate as you speak; the
+            // writing replays in sync with your voice.
+            if (uiState.isRecording) {
+                var toolbarTick by remember { mutableStateOf(0) }
+                key(toolbarTick) {
+                    com.seenslide.teacher.core.drawing.DrawingToolbar(
+                        currentTool = viewModel.drawingState.currentTool,
+                        currentColor = viewModel.drawingState.currentColor,
+                        currentWidth = viewModel.drawingState.currentWidth,
+                        canUndo = viewModel.drawingState.canUndo,
+                        canRedo = viewModel.drawingState.canRedo,
+                        onToolSelected = { viewModel.drawingState.currentTool = it; toolbarTick++ },
+                        onColorSelected = { viewModel.drawingState.currentColor = it; toolbarTick++ },
+                        onWidthChanged = { viewModel.drawingState.currentWidth = it; toolbarTick++ },
+                        onUndo = { viewModel.drawingState.undo(); toolbarTick++ },
+                        onRedo = { viewModel.drawingState.redo(); toolbarTick++ },
+                    )
                 }
             }
 
@@ -274,6 +311,25 @@ fun NarrationScreen(
                                     .size(14.dp),
                             )
                         }
+                    }
+                }
+                // "+" tile: append a blank writing surface
+                item {
+                    Box(
+                        modifier = Modifier
+                            .size(width = 72.dp, height = 54.dp)
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .clickable(enabled = !uiState.isRecording) {
+                                viewModel.addBlankSlide()
+                            },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = "Add blank slide",
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
                     }
                 }
             }

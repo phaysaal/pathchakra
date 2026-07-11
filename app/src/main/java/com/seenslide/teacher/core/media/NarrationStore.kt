@@ -65,8 +65,27 @@ class NarrationStore @Inject constructor(
         metaFile(talkId).writeText(meta.toString())
     }
 
+    // --- Ink (stroke timeline recorded while narrating) ---
+
+    private fun strokesFileFor(talkId: String, slideNumber: Int): File =
+        File(dir(talkId), "slide_$slideNumber.strokes.json")
+
+    /** JSON array of wire-format strokes, timestamps in audio-relative ms. */
+    fun saveStrokes(talkId: String, slideNumber: Int, strokesJson: String) {
+        dir(talkId).mkdirs()
+        strokesFileFor(talkId, slideNumber).writeText(strokesJson)
+    }
+
+    fun loadStrokes(talkId: String, slideNumber: Int): String? =
+        strokesFileFor(talkId, slideNumber).takeIf { it.exists() }?.readText()
+
+    fun deleteStrokes(talkId: String, slideNumber: Int) {
+        strokesFileFor(talkId, slideNumber).delete()
+    }
+
     fun delete(talkId: String, slideNumber: Int) {
         fileFor(talkId, slideNumber).delete()
+        deleteStrokes(talkId, slideNumber)
         val f = metaFile(talkId)
         if (f.exists()) {
             try {

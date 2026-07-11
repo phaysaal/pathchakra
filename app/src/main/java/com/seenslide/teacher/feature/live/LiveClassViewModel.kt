@@ -155,9 +155,18 @@ class LiveClassViewModel @Inject constructor(
                 voiceService.stop()
             }
 
-            // Stop stroke recording, save locally, and upload
+            // Stop stroke recording, save locally, and upload.
+            // Rebase stroke timestamps onto the AUDIO timeline so ink and
+            // voice replay in sync: offset = voice start - stroke start
+            // (both wall clock). Strokes drawn before voice began clamp to
+            // t=0 — they're the baseline picture when playback starts. If
+            // voice never ran, offset is 0 and wall-relative times remain
+            // (stroke-only replay).
             strokeRecorder.stopRecording()
-            val recordingJson = strokeRecorder.toJson()
+            val rebaseMs = if (voiceService.voiceStartWallMs > 0L && strokeRecorder.recordingStartTime > 0L) {
+                (voiceService.voiceStartWallMs - strokeRecorder.recordingStartTime).coerceAtLeast(0L)
+            } else 0L
+            val recordingJson = strokeRecorder.toJson(rebaseMs)
             recordingStore.save(talkId, recordingJson)
 
             // Upload stroke recording to server
@@ -167,7 +176,10 @@ class LiveClassViewModel @Inject constructor(
                     val obj = recordingJson.getJSONObject(i)
                     slides.add(jsonObjectToMap(obj))
                 }
-                sessionApi.uploadStrokeRecording(talkId, mapOf("slides" to slides))
+                sessionApi.uploadStrokeRecording(
+                    talkId,
+                    mapOf("slides" to slides, "clock" to "audio-ms"),
+                )
             } catch (_: Exception) {
                 // Non-fatal — local copy saved, can retry later
             }
