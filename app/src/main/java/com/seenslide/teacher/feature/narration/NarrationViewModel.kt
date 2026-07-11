@@ -348,6 +348,17 @@ class NarrationViewModel @Inject constructor(
                     voiceApi.uploadChunk(rid, part, chunkIndex = i + 1)
                     markers.add(MarkerItem(slide.slideNumber, cumulative))
 
+                    // Marker via the per-slide POST — the same path the
+                    // live class uses, which lands reliably. The bulk PUT
+                    // below is kept as reinforcement, but this is what
+                    // actually made narration markers appear. Individually
+                    // guarded so one failure can't abort the publish.
+                    try {
+                        voiceApi.addMarker(rid, slide.slideNumber, cumulative)
+                    } catch (e: Exception) {
+                        Log.w(TAG, "per-slide marker failed (slide ${slide.slideNumber})", e)
+                    }
+
                     // Ink: shift this slide's stroke timeline to its position
                     // in the merged audio — the same offset as its marker.
                     narrationStore.loadStrokes(talkId, slide.slideNumber)?.let { json ->
@@ -370,7 +381,14 @@ class NarrationViewModel @Inject constructor(
                     )
                 }
 
-                voiceApi.syncMarkers(rid, SyncMarkersRequest(markers))
+                // Reinforce with the bulk sync, but never let it abort the
+                // finalize — a failure here (e.g. response parsing) must not
+                // skip stopRecording and leave the recording stuck.
+                try {
+                    voiceApi.syncMarkers(rid, SyncMarkersRequest(markers))
+                } catch (e: Exception) {
+                    Log.w(TAG, "bulk marker sync failed (per-slide markers already sent)", e)
+                }
                 voiceApi.stopRecording(rid, cumulative)
 
                 // Publish the merged ink timeline (replaces the talk's
