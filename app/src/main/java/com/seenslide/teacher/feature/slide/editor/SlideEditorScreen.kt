@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -26,6 +27,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CleaningServices
+import androidx.compose.material.icons.filled.CloseFullscreen
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.PanTool
 import androidx.compose.material.icons.filled.FiberManualRecord
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Stop
@@ -187,6 +191,21 @@ fun SlideEditorScreen(
 
     // Fullscreen drawing mode
     if (isFullscreen) {
+        // Lock to landscape while fullscreen — slides are landscape, and
+        // physical rotation should not disrupt editing. Restore on exit.
+        val activity = context as? android.app.Activity
+        androidx.compose.runtime.DisposableEffect(Unit) {
+            val previous = activity?.requestedOrientation
+            activity?.requestedOrientation =
+                android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            onDispose {
+                activity?.requestedOrientation =
+                    previous ?: android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            }
+        }
+        // Draw ON = single finger draws; OFF = single finger pans.
+        var drawMode by remember { mutableStateOf(true) }
+
         Dialog(
             onDismissRequest = { isFullscreen = false },
             properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -194,14 +213,21 @@ fun SlideEditorScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White),
+                    .background(Color(0xFF202124)),
+                contentAlignment = Alignment.Center,
             ) {
+                // 4:3 canvas centered — matches the saved slide so strokes
+                // aren't distorted, letterboxed within the landscape screen.
                 DrawingCanvas(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .aspectRatio(4f / 3f)
+                        .background(Color.White),
                     drawingState = viewModel.drawingState,
                     backgroundBitmap = viewModel.backgroundBitmap,
                     zoomable = true,
                     showGuides = viewModel.backgroundBitmap == null,
+                    drawEnabled = drawMode,
                     recordingStartTime = if (uiState.isRecording) {
                         viewModel.strokeRecorder.recordingStartTime
                     } else {
@@ -212,10 +238,48 @@ fun SlideEditorScreen(
                     onStrokeCompleted = viewModel::onStrokeCompleted,
                 )
 
-                // Floating vertical toolbar on the right
-                FloatingVerticalToolbar(
+                // Exit-fullscreen (top-right)
+                IconButton(
+                    onClick = { isFullscreen = false },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .background(Color(0x66000000), RoundedCornerShape(50)),
+                ) {
+                    Icon(
+                        Icons.Default.CloseFullscreen,
+                        contentDescription = stringResource(R.string.exit_fullscreen),
+                        tint = Color.White,
+                    )
+                }
+
+                // Draw / pan toggle (top-left)
+                IconButton(
+                    onClick = { drawMode = !drawMode },
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(8.dp)
+                        .background(
+                            if (drawMode) MaterialTheme.colorScheme.primary else Color(0x66000000),
+                            RoundedCornerShape(50),
+                        ),
+                ) {
+                    Icon(
+                        if (drawMode) Icons.Default.Edit else Icons.Default.PanTool,
+                        contentDescription = if (drawMode) {
+                            stringResource(R.string.draw_mode_on)
+                        } else {
+                            stringResource(R.string.pan_mode_on)
+                        },
+                        tint = Color.White,
+                    )
+                }
+
+                // Same foldable toolbar as normal mode, along the bottom
+                DrawingToolbar(
                     currentTool = uiState.currentTool,
                     currentColor = uiState.currentColor,
+                    currentWidth = uiState.currentWidth,
                     canUndo = uiState.canUndo,
                     canRedo = uiState.canRedo,
                     onToolSelected = { tool ->
@@ -226,12 +290,12 @@ fun SlideEditorScreen(
                         }
                     },
                     onColorSelected = viewModel::onColorSelected,
+                    onWidthChanged = viewModel::onWidthChanged,
                     onUndo = viewModel::onUndo,
                     onRedo = viewModel::onRedo,
-                    onExitFullscreen = { isFullscreen = false },
                     modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 12.dp),
+                        .align(Alignment.BottomCenter)
+                        .navigationBarsPadding(),
                 )
             }
         }

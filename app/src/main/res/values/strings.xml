@@ -354,4 +354,7 @@
     <string name="last_auto_backup">Last auto-backup: %s</string>
     <string name="auto_backup_never">Never</string>
     <string name="record_narration">Record narration (slide by slide)</string>
+    <string name="exit_fullscreen">Exit full screen</string>
+    <string name="draw_mode_on">Drawing (tap to pan)</string>
+    <string name="pan_mode_on">Pan (tap to draw)</string>
 </resources>

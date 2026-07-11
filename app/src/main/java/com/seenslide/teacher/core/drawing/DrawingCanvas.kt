@@ -37,6 +37,10 @@ fun DrawingCanvas(
     // Draw a faint grid, border and centre cross so pan/zoom is legible on
     // an otherwise featureless blank canvas. Off when there's a background.
     showGuides: Boolean = false,
+    // When false, a single finger PANS instead of drawing (two-finger
+    // zoom/pan still works either way). Lets the user reposition the
+    // canvas naturally with one finger between strokes.
+    drawEnabled: Boolean = true,
     onStrokeStarted: ((Stroke) -> Unit)? = null,
     onStrokePointAdded: ((List<StrokePoint>) -> Unit)? = null,
     onStrokeCompleted: ((DrawElement) -> Unit)? = null,
@@ -60,7 +64,7 @@ fun DrawingCanvas(
         modifier = modifier
             // Two-finger pan/zoom layer (only when zoomable). Consumes the
             // gesture when 2+ fingers are down so the draw handler bails.
-            .pointerInput(zoomable) {
+            .pointerInput(zoomable, drawEnabled) {
                 if (!zoomable) return@pointerInput
                 awaitEachGesture {
                     awaitFirstDown(requireUnconsumed = false)
@@ -68,7 +72,15 @@ fun DrawingCanvas(
                     do {
                         val event = awaitPointerEvent()
                         pressed = event.changes.filter { it.pressed }
-                        if (pressed.size >= 2) {
+                        if (pressed.size == 1 && !drawEnabled) {
+                            // Draw mode off → single-finger pan.
+                            val ch = pressed[0]
+                            offset = clampOffset(
+                                offset + ch.positionChange(),
+                                scale, size.width.toFloat(), size.height.toFloat(),
+                            )
+                            ch.consume()
+                        } else if (pressed.size >= 2) {
                             val a = pressed[0]
                             val b = pressed[1]
                             val prevA = a.position - a.positionChange()
@@ -90,9 +102,13 @@ fun DrawingCanvas(
                     } while (pressed.any())
                 }
             }
-            .pointerInput(drawingState.currentTool) {
+            .pointerInput(drawingState.currentTool, drawEnabled) {
+                if (!drawEnabled) return@pointerInput  // single-finger = pan (handled above)
                 awaitEachGesture {
                     val down = awaitFirstDown(requireUnconsumed = false)
+                    // If the transform handler already claimed this (pan/
+                    // zoom), don't also draw.
+                    if (down.isConsumed) return@awaitEachGesture
                     down.consume()
 
                     // Map screen → logical canvas coords through the inverse

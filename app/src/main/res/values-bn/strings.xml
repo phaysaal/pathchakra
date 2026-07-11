@@ -353,4 +353,7 @@
     <string name="last_auto_backup">সর্বশেষ স্বয়ংক্রিয় ব্যাকআপ: %s</string>
     <string name="auto_backup_never">কখনো হয়নি</string>
     <string name="record_narration">স্লাইড ধরে ধরে লেকচার রেকর্ড করুন</string>
+    <string name="exit_fullscreen">ফুল স্ক্রিন বন্ধ করুন</string>
+    <string name="draw_mode_on">আঁকা চালু (প্যান করতে ট্যাপ)</string>
+    <string name="pan_mode_on">প্যান চালু (আঁকতে ট্যাপ)</string>
 </resources>

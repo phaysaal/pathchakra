@@ -354,4 +354,7 @@
     <string name="last_auto_backup">Dernière sauvegarde auto : %s</string>
     <string name="auto_backup_never">Jamais</string>
     <string name="record_narration">Enregistrer la narration (diapo par diapo)</string>
+    <string name="exit_fullscreen">Quitter le plein écran</string>
+    <string name="draw_mode_on">Dessin (toucher pour déplacer)</string>
+    <string name="pan_mode_on">Déplacement (toucher pour dessiner)</string>
 </resources>
