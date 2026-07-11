@@ -2,6 +2,8 @@ package com.seenslide.teacher.feature.slide.editor
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -70,7 +72,10 @@ class SlideEditorViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SlideEditorUiState())
     val uiState: StateFlow<SlideEditorUiState> = _uiState
 
-    var backgroundBitmap: Bitmap? = null
+    // Compose state so the canvas recomposes/redraws the instant the
+    // background finishes loading — previously a plain var, so the photo/
+    // PDF page stayed invisible until the first stroke bumped drawVersion.
+    var backgroundBitmap: Bitmap? by androidx.compose.runtime.mutableStateOf(null)
         private set
 
     init {

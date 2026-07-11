@@ -200,6 +200,7 @@ fun SlideEditorScreen(
                     modifier = Modifier.fillMaxSize(),
                     drawingState = viewModel.drawingState,
                     backgroundBitmap = viewModel.backgroundBitmap,
+                    zoomable = true,
                     recordingStartTime = if (uiState.isRecording) {
                         viewModel.strokeRecorder.recordingStartTime
                     } else {
@@ -333,6 +334,7 @@ fun SlideEditorScreen(
                         .background(Color.White),
                     drawingState = viewModel.drawingState,
                     backgroundBitmap = viewModel.backgroundBitmap,
+                    zoomable = true,
                     recordingStartTime = if (uiState.isRecording) {
                         viewModel.strokeRecorder.recordingStartTime
                     } else {
@@ -611,8 +613,15 @@ private fun captureCanvasBitmap(
     canvas.drawColor(android.graphics.Color.WHITE)
 
     viewModel.backgroundBitmap?.let { bg ->
+        // Fit letterboxed (match the on-screen canvas), never stretch — so
+        // the exported 4:3 slide preserves the source image's proportions.
+        val s = minOf(width.toFloat() / bg.width, height.toFloat() / bg.height)
+        val dw = bg.width * s
+        val dh = bg.height * s
+        val left = (width - dw) / 2f
+        val top = (height - dh) / 2f
         val srcRect = android.graphics.Rect(0, 0, bg.width, bg.height)
-        val dstRect = android.graphics.Rect(0, 0, width, height)
+        val dstRect = android.graphics.RectF(left, top, left + dw, top + dh)
         canvas.drawBitmap(bg, srcRect, dstRect, null)
     }
 

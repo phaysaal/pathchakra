@@ -124,7 +124,9 @@ class PdfViewModel @Inject constructor(
                     val w = ((rightFrac - leftFrac) * bitmap.width).toInt().coerceIn(1, bitmap.width - x)
                     val h = ((bottomFrac - topFrac) * bitmap.height).toInt().coerceIn(1, bitmap.height - y)
                     val cropped = Bitmap.createBitmap(bitmap, x, y, w, h)
-                    val result = imageEnhancer.compressToBytes(cropped, quality = 90)
+                    val fitted = com.seenslide.teacher.core.slidedoc.SlideCanvas.fitToCanonical(cropped)
+                    val result = imageEnhancer.compressToBytes(fitted, quality = 90)
+                    fitted.recycle()
                     if (cropped !== bitmap) cropped.recycle()
                     result
                 }
@@ -145,7 +147,10 @@ class PdfViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isUploading = true, error = null)
             try {
                 val bytes = withContext(Dispatchers.Default) {
-                    imageEnhancer.compressToBytes(bitmap, quality = 90)
+                    val fitted = com.seenslide.teacher.core.slidedoc.SlideCanvas.fitToCanonical(bitmap)
+                    val result = imageEnhancer.compressToBytes(fitted, quality = 90)
+                    fitted.recycle()
+                    result
                 }
                 uploadBytes(bytes)
             } catch (e: Exception) {

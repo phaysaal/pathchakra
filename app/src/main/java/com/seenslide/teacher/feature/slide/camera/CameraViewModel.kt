@@ -57,9 +57,14 @@ class CameraViewModel @Inject constructor(
             try {
                 val bytes = withContext(Dispatchers.Default) {
                     val bitmap = BitmapFactory.decodeFile(path)
-                    val finalBitmap = if (enhanced) imageEnhancer.enhance(bitmap) else bitmap
+                    val enhancedBitmap = if (enhanced) imageEnhancer.enhance(bitmap) else bitmap
+                    // Normalize to the canonical slide aspect so camera
+                    // photos match every other slide kind in the deck.
+                    val finalBitmap = com.seenslide.teacher.core.slidedoc.SlideCanvas
+                        .fitToCanonical(enhancedBitmap)
                     val result = imageEnhancer.compressToBytes(finalBitmap)
-                    if (finalBitmap !== bitmap) finalBitmap.recycle()
+                    finalBitmap.recycle()
+                    if (enhancedBitmap !== bitmap) enhancedBitmap.recycle()
                     bitmap.recycle()
                     result
                 }

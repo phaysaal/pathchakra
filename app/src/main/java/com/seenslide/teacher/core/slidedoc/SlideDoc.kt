@@ -14,7 +14,9 @@ import java.util.UUID
 @JsonClass(generateAdapter = true)
 data class SlideDoc(
     val version: Int = 1,
-    val aspect: Float = 16f / 9f,
+    // Canonical slide aspect — matches the editor and camera output so
+    // every slide kind shares one shape (see SlideCanvas.ASPECT).
+    val aspect: Float = 4f / 3f,
     val background: SlideBackground = SlideBackground(),
     val elements: List<SlideElement> = emptyList(),
 )

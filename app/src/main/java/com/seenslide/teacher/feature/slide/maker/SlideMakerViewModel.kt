@@ -204,7 +204,7 @@ class SlideMakerViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(error = null)
     }
 
-    fun save(widthPx: Int = 1920, heightPx: Int = 1080) {
+    fun save(widthPx: Int = com.seenslide.teacher.core.slidedoc.SlideCanvas.WIDTH, heightPx: Int = com.seenslide.teacher.core.slidedoc.SlideCanvas.HEIGHT) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isSaving = true)
             try {
@@ -246,7 +246,7 @@ class SlideMakerViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(aiStatus = "Uploading slides\u2026")
                 response.slides.forEachIndexed { idx, doc ->
                     val bytes = withContext(Dispatchers.Default) {
-                        rasterize(doc, 1920, 1080, ::resolveImage)
+                        rasterize(doc, com.seenslide.teacher.core.slidedoc.SlideCanvas.WIDTH, com.seenslide.teacher.core.slidedoc.SlideCanvas.HEIGHT, ::resolveImage)
                     }
                     // First slide can replace the current one; the rest append.
                     val replace = if (idx == 0) replaceSlide else null

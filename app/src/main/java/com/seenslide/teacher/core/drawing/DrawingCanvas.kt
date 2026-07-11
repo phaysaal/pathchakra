@@ -14,6 +14,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
@@ -30,6 +31,9 @@ fun DrawingCanvas(
     drawingState: DrawingState,
     backgroundBitmap: Bitmap? = null,
     recordingStartTime: Long = 0L,
+    // When true, two-finger drag/pinch pans and zooms the canvas while a
+    // single finger draws — essential for meaningful editing on a phone.
+    zoomable: Boolean = false,
     onStrokeStarted: ((Stroke) -> Unit)? = null,
     onStrokePointAdded: ((List<StrokePoint>) -> Unit)? = null,
     onStrokeCompleted: ((DrawElement) -> Unit)? = null,
@@ -42,18 +46,56 @@ fun DrawingCanvas(
     var drawVersion by remember { mutableStateOf(0) }
     val textMeasurer = rememberTextMeasurer()
 
+    // View transform (pan/zoom). Identity when not zoomable.
+    var scale by remember { mutableStateOf(1f) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
+
     // Batch points for WebSocket
     var pendingPoints by remember { mutableStateOf(listOf<StrokePoint>()) }
 
     Canvas(
         modifier = modifier
+            // Two-finger pan/zoom layer (only when zoomable). Consumes the
+            // gesture when 2+ fingers are down so the draw handler bails.
+            .pointerInput(zoomable) {
+                if (!zoomable) return@pointerInput
+                awaitEachGesture {
+                    awaitFirstDown(requireUnconsumed = false)
+                    var pressed: List<PointerInputChange>
+                    do {
+                        val event = awaitPointerEvent()
+                        pressed = event.changes.filter { it.pressed }
+                        if (pressed.size >= 2) {
+                            val a = pressed[0]
+                            val b = pressed[1]
+                            val prevA = a.position - a.positionChange()
+                            val prevB = b.position - b.positionChange()
+                            val curCentroid = (a.position + b.position) / 2f
+                            val prevCentroid = (prevA + prevB) / 2f
+                            val curDist = (a.position - b.position).getDistance()
+                            val prevDist = (prevA - prevB).getDistance()
+                            val zoom = if (prevDist > 0f) curDist / prevDist else 1f
+                            val newScale = (scale * zoom).coerceIn(1f, 6f)
+                            val actualZoom = if (scale > 0f) newScale / scale else 1f
+                            // Keep the world point under the centroid fixed,
+                            // then pan by the centroid's movement.
+                            offset = curCentroid - (prevCentroid - offset) * actualZoom
+                            scale = newScale
+                            offset = clampOffset(offset, scale, size.width.toFloat(), size.height.toFloat())
+                            pressed.forEach { it.consume() }
+                        }
+                    } while (pressed.any())
+                }
+            }
             .pointerInput(drawingState.currentTool) {
                 awaitEachGesture {
                     val down = awaitFirstDown(requireUnconsumed = false)
                     down.consume()
 
-                    val nx = down.position.x / size.width
-                    val ny = down.position.y / size.height
+                    // Map screen → logical canvas coords through the inverse
+                    // of the pan/zoom transform.
+                    val nx = ((down.position.x - offset.x) / scale) / size.width
+                    val ny = ((down.position.y - offset.y) / scale) / size.height
                     val pressure = down.pressure.coerceIn(0f, 1f)
                     val now = if (recordingStartTime > 0) System.currentTimeMillis() - recordingStartTime else 0L
 
@@ -89,11 +131,20 @@ fun DrawingCanvas(
                     // Drag
                     do {
                         val event = awaitPointerEvent()
+                        // Second finger down → a pan/zoom, not a stroke.
+                        // Abandon the in-progress stroke and let the
+                        // transform handler take over.
+                        if (event.changes.count { it.pressed } >= 2) {
+                            currentStroke = null
+                            shapeStart = null
+                            shapePreview = null
+                            break
+                        }
                         for (change in event.changes) {
                             if (change.pressed) {
                                 change.consume()
-                                val mx = change.position.x / size.width
-                                val my = change.position.y / size.height
+                                val mx = ((change.position.x - offset.x) / scale) / size.width
+                                val my = ((change.position.y - offset.y) / scale) / size.height
                                 val mp = change.pressure.coerceIn(0f, 1f)
                                 val mt = if (recordingStartTime > 0) System.currentTimeMillis() - recordingStartTime else 0L
 
@@ -176,44 +227,72 @@ fun DrawingCanvas(
     ) {
         // Force dependency on drawVersion
         drawVersion.let { _ ->
-            // Draw background
-            backgroundBitmap?.let { bmp ->
-                drawImage(bmp.asImageBitmap())
-            }
-
-            // Draw all elements
-            with(CanvasRenderer) {
-                renderElements(drawingState.elements, currentStroke)
-            }
-
-            // Shape preview while dragging
-            shapePreview?.let { shape ->
-                with(CanvasRenderer) {
-                    renderElements(listOf(DrawElement.ShapeElement(shape)), null)
+            withTransform({
+                translate(offset.x, offset.y)
+                scale(scale, scale, pivot = Offset.Zero)
+            }) {
+                // Background: fit inside the canvas preserving the image's
+                // own aspect (letterboxed), NOT stretched — so a photo/PDF
+                // page isn't distorted while the slide stays a fixed aspect.
+                backgroundBitmap?.let { bmp ->
+                    val img = bmp.asImageBitmap()
+                    val s = minOf(size.width / bmp.width, size.height / bmp.height)
+                    val dw = bmp.width * s
+                    val dh = bmp.height * s
+                    drawImage(
+                        image = img,
+                        dstOffset = androidx.compose.ui.unit.IntOffset(
+                            ((size.width - dw) / 2f).toInt(),
+                            ((size.height - dh) / 2f).toInt(),
+                        ),
+                        dstSize = androidx.compose.ui.unit.IntSize(dw.toInt(), dh.toInt()),
+                    )
                 }
-            }
 
-            laserPoint?.let { point ->
-                drawCircle(
-                    color = Color(0xFFE53935),
-                    radius = size.minDimension * 0.018f,
-                    center = Offset(point.x * size.width, point.y * size.height),
-                )
-                drawCircle(
-                    color = Color(0x66FF5252),
-                    radius = size.minDimension * 0.035f,
-                    center = Offset(point.x * size.width, point.y * size.height),
-                )
-            }
+                // Draw all elements
+                with(CanvasRenderer) {
+                    renderElements(drawingState.elements, currentStroke)
+                }
 
-            // Render text elements with TextMeasurer
-            for (element in drawingState.elements) {
-                if (element is DrawElement.TextElement) {
-                    renderTextElement(element.textStroke, textMeasurer)
+                // Shape preview while dragging
+                shapePreview?.let { shape ->
+                    with(CanvasRenderer) {
+                        renderElements(listOf(DrawElement.ShapeElement(shape)), null)
+                    }
+                }
+
+                laserPoint?.let { point ->
+                    drawCircle(
+                        color = Color(0xFFE53935),
+                        radius = size.minDimension * 0.018f,
+                        center = Offset(point.x * size.width, point.y * size.height),
+                    )
+                    drawCircle(
+                        color = Color(0x66FF5252),
+                        radius = size.minDimension * 0.035f,
+                        center = Offset(point.x * size.width, point.y * size.height),
+                    )
+                }
+
+                // Render text elements with TextMeasurer
+                for (element in drawingState.elements) {
+                    if (element is DrawElement.TextElement) {
+                        renderTextElement(element.textStroke, textMeasurer)
+                    }
                 }
             }
         }
     }
+}
+
+/** Clamp pan so the scaled content never leaves a gap in the viewport. */
+private fun clampOffset(o: Offset, scale: Float, w: Float, h: Float): Offset {
+    val minX = w * (1f - scale)
+    val minY = h * (1f - scale)
+    return Offset(
+        o.x.coerceIn(minX, 0f),
+        o.y.coerceIn(minY, 0f),
+    )
 }
 
 private fun DrawScope.renderTextElement(textStroke: TextStroke, textMeasurer: TextMeasurer) {
